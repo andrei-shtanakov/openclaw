@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { OpenClawConfig } from "../../config/config.js";
 import { resolveResponsePrefix, resolveEffectiveMessagesConfig } from "./identity.js";
 
 const makeConfig = <T extends OpenClawConfig>(cfg: T) => cfg;

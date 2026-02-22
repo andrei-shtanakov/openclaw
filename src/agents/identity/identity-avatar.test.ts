@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
-import { AVATAR_MAX_BYTES } from "../shared/avatar-policy.js";
+import type { OpenClawConfig } from "../../config/config.js";
+import { AVATAR_MAX_BYTES } from "../../shared/avatar-policy.js";
 import { resolveAgentAvatar } from "./identity-avatar.js";
 
 async function writeFile(filePath: string, contents = "avatar") {
