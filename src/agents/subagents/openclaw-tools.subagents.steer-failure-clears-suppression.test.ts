@@ -2,17 +2,17 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
+import { createSubagentsTool } from "../tools/subagents-tool.js";
 import {
   callGatewayMock,
   setSubagentsConfigOverride,
 } from "./openclaw-tools.subagents.test-harness.js";
+import "../test-helpers/fast-core-tools.js";
 import {
   addSubagentRunForTests,
   listSubagentRunsForRequester,
   resetSubagentRegistryForTests,
 } from "./subagent-registry.js";
-import "./test-helpers/fast-core-tools.js";
-import { createSubagentsTool } from "./tools/subagents-tool.js";
 
 describe("openclaw-tools: subagents steer failure", () => {
   beforeEach(() => {

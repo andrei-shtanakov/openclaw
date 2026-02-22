@@ -4,13 +4,13 @@ const { callGateway } = vi.hoisted(() => ({
   callGateway: vi.fn(),
 }));
 
-vi.mock("../gateway/call.js", () => ({ callGateway }));
-vi.mock("../media/image-ops.js", () => ({
+vi.mock("../../gateway/call.js", () => ({ callGateway }));
+vi.mock("../../media/image-ops.js", () => ({
   getImageMetadata: vi.fn(async () => ({ width: 1, height: 1 })),
   resizeToJpeg: vi.fn(async () => Buffer.from("jpeg")),
 }));
 
-import "./test-helpers/fast-core-tools.js";
+import "../test-helpers/fast-core-tools.js";
 import { createOpenClawTools } from "./openclaw-tools.js";
 
 const NODE_ID = "mac-1";

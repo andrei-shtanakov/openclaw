@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import "./test-helpers/fast-core-tools.js";
+import "../test-helpers/fast-core-tools.js";
 import {
   findGatewayRequest,
   getCallGatewayMock,
@@ -36,7 +36,7 @@ const hookRunnerMocks = vi.hoisted(() => ({
   runSubagentEnded: vi.fn(async () => {}),
 }));
 
-vi.mock("../plugins/hook-runner-global.js", () => ({
+vi.mock("../../plugins/hook-runner-global.js", () => ({
   getGlobalHookRunner: vi.fn(() => ({
     hasHooks: (hookName: string) =>
       hookName === "subagent_spawning" ||

@@ -1,6 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { emitAgentEvent } from "../infra/agent-events.js";
-import "./test-helpers/fast-core-tools.js";
+import { emitAgentEvent } from "../../infra/agent-events.js";
+import "../test-helpers/fast-core-tools.js";
 import {
   getCallGatewayMock,
   getSessionsSpawnTool,
@@ -10,7 +10,7 @@ import {
 } from "./openclaw-tools.subagents.sessions-spawn.test-harness.js";
 import { resetSubagentRegistryForTests } from "./subagent-registry.js";
 
-vi.mock("./pi-embedded.js", () => ({
+vi.mock("../pi-embedded.js", () => ({
   isEmbeddedPiRunActive: () => false,
   isEmbeddedPiRunStreaming: () => false,
   queueEmbeddedPiMessage: () => false,

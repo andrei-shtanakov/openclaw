@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-type SessionsSpawnTestConfig = ReturnType<(typeof import("../config/config.js"))["loadConfig"]>;
+type SessionsSpawnTestConfig = ReturnType<(typeof import("../../config/config.js"))["loadConfig"]>;
 type CreateOpenClawTools = (typeof import("./openclaw-tools.js"))["createOpenClawTools"];
 export type CreateOpenClawToolsOpts = Parameters<CreateOpenClawTools>[0];
 export type GatewayRequest = { method?: string; params?: unknown };
@@ -154,16 +154,16 @@ export function setupSessionsSpawnGatewayMock(setupOpts: SessionsSpawnGatewayMoc
   };
 }
 
-vi.mock("../gateway/call.js", () => ({
-  callGateway: (opts: unknown) => hoisted.callGatewayMock(opts),
-}));
-// Some tools import callGateway via "../../gateway/call.js" (from nested folders). Mock that too.
 vi.mock("../../gateway/call.js", () => ({
   callGateway: (opts: unknown) => hoisted.callGatewayMock(opts),
 }));
+// Some tools import callGateway via "../../gateway/call.js" (from nested folders). Mock that too.
+vi.mock("../../../gateway/call.js", () => ({
+  callGateway: (opts: unknown) => hoisted.callGatewayMock(opts),
+}));
 
-vi.mock("../config/config.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../config/config.js")>();
+vi.mock("../../config/config.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../config/config.js")>();
   return {
     ...actual,
     loadConfig: () => hoisted.state.configOverride,
@@ -172,8 +172,8 @@ vi.mock("../config/config.js", async (importOriginal) => {
 });
 
 // Same module, different specifier (used by tools under src/agents/tools/*).
-vi.mock("../../config/config.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../config/config.js")>();
+vi.mock("../../../config/config.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../config/config.js")>();
   return {
     ...actual,
     loadConfig: () => hoisted.state.configOverride,

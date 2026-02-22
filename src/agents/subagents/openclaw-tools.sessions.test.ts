@@ -6,12 +6,12 @@ import {
 } from "./subagent-registry.js";
 
 const callGatewayMock = vi.fn();
-vi.mock("../gateway/call.js", () => ({
+vi.mock("../../gateway/call.js", () => ({
   callGateway: (opts: unknown) => callGatewayMock(opts),
 }));
 
-vi.mock("../config/config.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../config/config.js")>();
+vi.mock("../../config/config.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../config/config.js")>();
   return {
     ...actual,
     loadConfig: () => ({
@@ -29,7 +29,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
   };
 });
 
-import "./test-helpers/fast-core-tools.js";
+import "../test-helpers/fast-core-tools.js";
 import { createOpenClawTools } from "./openclaw-tools.js";
 
 const waitForCalls = async (getCount: () => number, count: number, timeoutMs = 2000) => {
@@ -41,11 +41,11 @@ const waitForCalls = async (getCount: () => number, count: number, timeoutMs = 2
   );
 };
 
-let sessionsModule: typeof import("../config/sessions.js");
+let sessionsModule: typeof import("../../config/sessions.js");
 
 describe("sessions tools", () => {
   beforeAll(async () => {
-    sessionsModule = await import("../config/sessions.js");
+    sessionsModule = await import("../../config/sessions.js");
   });
 
   beforeEach(() => {

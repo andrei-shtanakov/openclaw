@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import "./subagent-registry.mocks.shared.js";
-import { captureEnv } from "../test-utils/env.js";
+import { captureEnv } from "../../test-utils/env.js";
 import {
   initSubagentRegistry,
   registerSubagentRun,

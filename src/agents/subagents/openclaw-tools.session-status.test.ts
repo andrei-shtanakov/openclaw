@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 const loadSessionStoreMock = vi.fn();
 const updateSessionStoreMock = vi.fn();
 
-vi.mock("../config/sessions.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../config/sessions.js")>();
+vi.mock("../../config/sessions.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../config/sessions.js")>();
   return {
     ...actual,
     loadSessionStore: (storePath: string) => loadSessionStoreMock(storePath),
@@ -22,8 +22,8 @@ vi.mock("../config/sessions.js", async (importOriginal) => {
   };
 });
 
-vi.mock("../config/config.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../config/config.js")>();
+vi.mock("../../config/config.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../config/config.js")>();
   return {
     ...actual,
     loadConfig: () => ({
@@ -38,7 +38,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
   };
 });
 
-vi.mock("../agents/model-catalog.js", () => ({
+vi.mock("../../agents/model-catalog.js", () => ({
   loadModelCatalog: async () => [
     {
       provider: "anthropic",
@@ -55,19 +55,19 @@ vi.mock("../agents/model-catalog.js", () => ({
   ],
 }));
 
-vi.mock("../agents/auth-profiles.js", () => ({
+vi.mock("../../agents/auth-profiles.js", () => ({
   ensureAuthProfileStore: () => ({ profiles: {} }),
   resolveAuthProfileDisplayLabel: () => undefined,
   resolveAuthProfileOrder: () => [],
 }));
 
-vi.mock("../agents/model-auth.js", () => ({
+vi.mock("../../agents/model-auth.js", () => ({
   resolveEnvApiKey: () => null,
   getCustomProviderApiKey: () => null,
   resolveModelAuthMode: () => "api-key",
 }));
 
-vi.mock("../infra/provider-usage.js", () => ({
+vi.mock("../../infra/provider-usage.js", () => ({
   resolveUsageProviderId: () => undefined,
   loadProviderUsageSummary: async () => ({
     updatedAt: Date.now(),
@@ -76,7 +76,7 @@ vi.mock("../infra/provider-usage.js", () => ({
   formatUsageSummaryLine: () => null,
 }));
 
-import "./test-helpers/fast-core-tools.js";
+import "../test-helpers/fast-core-tools.js";
 import { createOpenClawTools } from "./openclaw-tools.js";
 
 function resetSessionStore(store: Record<string, unknown>) {
