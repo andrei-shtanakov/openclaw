@@ -6,6 +6,11 @@ Docs: https://docs.openclaw.ai
 
 ### Changes
 
+- Refactor/Agents: reorganize `src/agents/` into `model-config/`, `skills/`, and `subagents/` sub-directories for clearer module boundaries (Phase 1).
+- Gateway/Models: hot-reload model catalog on config change without gateway restart, with generation-guarded cache to prevent stale in-flight loads (Phase 2).
+- Channels/Security: extract duplicated DM-policy, warnings, and setup-defaults code from 7 channel extensions into shared factory functions (`buildResolveDmPolicy`, `buildCollectWarnings`, `buildSetupDefaults`) in plugin-sdk (Phase 3).
+- Cleanup: remove Swabble/ wake-word daemon (36 files), 4 untested extensions (device-pair, phone-control, talk-voice, copilot-proxy), and open-prose wrapper (~90 files, standalone repo exists). Mark 4 auth-provider extensions as experimental (Phase 4).
+- Docs/Extensions: add standard READMEs to all 20 extensions that lacked them — every extension now has description, enable command, minimal config, and docs link (Phase 5).
 - Update/Core: add an optional built-in auto-updater for package installs (`update.auto.*`), default-off, with stable rollout delay+jitter and beta hourly cadence.
 - CLI/Update: add `openclaw update --dry-run` to preview channel/tag/target/restart actions without mutating config, installing, syncing plugins, or restarting.
 - Skills: remove bundled `food-order` skill from this repo; manage/install it from ClawHub instead.
