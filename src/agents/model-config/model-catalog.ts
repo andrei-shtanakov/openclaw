@@ -59,8 +59,18 @@ function applyOpenAICodexSparkFallback(models: ModelCatalogEntry[]): void {
   });
 }
 
+let catalogGeneration = 0;
+
+/** Clear the model catalog cache so the next call to loadModelCatalog() re-discovers models.
+ *  Safe to call while a load is in flight — stale loads will not clobber the new cache. */
+export function invalidateModelCatalog(): void {
+  catalogGeneration++;
+  modelCatalogPromise = null;
+}
+
 export function resetModelCatalogCacheForTest() {
   modelCatalogPromise = null;
+  catalogGeneration = 0;
   hasLoggedModelCatalogError = false;
   importPiSdk = defaultImportPiSdk;
 }
@@ -89,6 +99,7 @@ export async function loadModelCatalog(params?: {
     return modelCatalogPromise;
   }
 
+  const generation = catalogGeneration;
   modelCatalogPromise = (async () => {
     const models: ModelCatalogEntry[] = [];
     const sortModels = (entries: ModelCatalogEntry[]) =>
@@ -144,8 +155,9 @@ export async function loadModelCatalog(params?: {
       }
       applyOpenAICodexSparkFallback(models);
 
-      if (models.length === 0) {
+      if (models.length === 0 && catalogGeneration === generation) {
         // If we found nothing, don't cache this result so we can try again.
+        // Guard: only clear if no invalidation happened since this load started.
         modelCatalogPromise = null;
       }
 
@@ -156,7 +168,10 @@ export async function loadModelCatalog(params?: {
         log.warn(`Failed to load model catalog: ${String(error)}`);
       }
       // Don't poison the cache on transient dependency/filesystem issues.
-      modelCatalogPromise = null;
+      // Guard: only clear if no invalidation happened since this load started.
+      if (catalogGeneration === generation) {
+        modelCatalogPromise = null;
+      }
       if (models.length > 0) {
         return sortModels(models);
       }
