@@ -298,16 +298,6 @@ curl "https://api.telegram.org/bot<bot_token>/getUpdates"
 
     - `setMyCommands failed` usually means outbound DNS/HTTPS to `api.telegram.org` is blocked.
 
-    ### Device pairing commands (`device-pair` plugin)
-
-    When the `device-pair` plugin is installed:
-
-    1. `/pair` generates setup code
-    2. paste code in iOS app
-    3. `/pair approve` approves latest pending request
-
-    More details: [Pairing](/channels/pairing#pair-via-telegram-recommended-for-ios).
-
   </Accordion>
 
   <Accordion title="Inline buttons">

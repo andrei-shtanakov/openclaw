@@ -54,7 +54,7 @@ creates a device pairing request that must be approved.
 
 ### Pair via Telegram (recommended for iOS)
 
-If you use the `device-pair` plugin, you can do first-time device pairing entirely from Telegram:
+You can do first-time device pairing entirely from Telegram:
 
 1. In Telegram, message your bot: `/pair`
 2. The bot replies with two messages: an instruction message and a separate **setup code** message (easy to copy/paste in Telegram).

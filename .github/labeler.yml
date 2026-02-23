@@ -196,10 +196,6 @@
           - "docs/cli/security.md"
           - "docs/gateway/security.md"
 
-"extensions: copilot-proxy":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "extensions/copilot-proxy/**"
 "extensions: diagnostics-otel":
   - changed-files:
       - any-glob-to-any-file:
@@ -232,19 +228,7 @@
   - changed-files:
       - any-glob-to-any-file:
           - "extensions/qwen-portal-auth/**"
-"extensions: device-pair":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "extensions/device-pair/**"
 "extensions: minimax-portal-auth":
   - changed-files:
       - any-glob-to-any-file:
           - "extensions/minimax-portal-auth/**"
-"extensions: phone-control":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "extensions/phone-control/**"
-"extensions: talk-voice":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "extensions/talk-voice/**"

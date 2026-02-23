@@ -17,19 +17,9 @@ x-i18n:
 
 ## 什么是 GitHub Copilot？
 
-GitHub Copilot 是 GitHub 的 AI 编程助手。它为你的 GitHub 账户和订阅计划提供 Copilot 模型的访问权限。OpenClaw 可以通过两种不同的方式将 Copilot 用作模型提供商。
+GitHub Copilot 是 GitHub 的 AI 编程助手。它为你的 GitHub 账户和订阅计划提供 Copilot 模型的访问权限。OpenClaw 可以将 Copilot 用作模型提供商。
 
-## 在 OpenClaw 中使用 Copilot 的两种方式
-
-### 1）内置 GitHub Copilot 提供商（`github-copilot`）
-
-使用原生设备登录流程获取 GitHub 令牌，然后在 OpenClaw 运行时将其兑换为 Copilot API 令牌。这是**默认**且最简单的方式，因为它不需要 VS Code。
-
-### 2）Copilot Proxy 插件（`copilot-proxy`）
-
-使用 **Copilot Proxy** VS Code 扩展作为本地桥接。OpenClaw 与代理的 `/v1` 端点通信，并使用你在其中配置的模型列表。当你已经在 VS Code 中运行 Copilot Proxy 或需要通过它进行路由时，选择此方式。你必须启用该插件并保持 VS Code 扩展运行。
-
-使用 GitHub Copilot 作为模型提供商（`github-copilot`）。登录命令运行 GitHub 设备流程，保存认证配置文件，并更新你的配置以使用该配置文件。
+使用原生设备登录流程获取 GitHub 令牌，然后在 OpenClaw 运行时将其兑换为 Copilot API 令牌。登录命令运行 GitHub 设备流程，保存认证配置文件，并更新你的配置以使用该配置文件。
 
 ## CLI 设置
 
