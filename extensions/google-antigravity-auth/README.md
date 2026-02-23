@@ -1,5 +1,7 @@
 # Google Antigravity Auth (OpenClaw plugin)
 
+> **Status: experimental** — requires testing and coverage before production use.
+
 OAuth provider plugin for **Google Antigravity** (Cloud Code Assist).
 
 ## Enable

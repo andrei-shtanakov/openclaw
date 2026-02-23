@@ -1,5 +1,7 @@
 # Google Gemini CLI Auth (OpenClaw plugin)
 
+> **Status: experimental** — requires testing and coverage before production use.
+
 OAuth provider plugin for **Gemini CLI** (Google Code Assist).
 
 ## Enable
