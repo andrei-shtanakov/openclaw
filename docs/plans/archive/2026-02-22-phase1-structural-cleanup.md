@@ -4,7 +4,7 @@
 
 **Goal:** Stabilize the openclaw core by fixing plugin isolation, removing legacy packages, and reorganizing the 419-file `src/agents/` monster into logical submodules.
 
-**Architecture:** Instead of physically moving files out of `src/agents/` (612 cross-codebase imports — too risky), we reorganize *within* `src/agents/` by moving 177 top-level files into properly named subdirectories. This preserves all external import paths (callers use `../agents/foo.ts` → `../agents/model-config/foo.ts` requires update, but `../agents/foo.ts` could be a re-export barrel). We use barrel re-exports to avoid breaking external consumers.
+**Architecture:** Instead of physically moving files out of `src/agents/` (612 cross-codebase imports — too risky), we reorganize _within_ `src/agents/` by moving 177 top-level files into properly named subdirectories. This preserves all external import paths (callers use `../agents/foo.ts` → `../agents/model-config/foo.ts` requires update, but `../agents/foo.ts` could be a re-export barrel). We use barrel re-exports to avoid breaking external consumers.
 
 **Tech Stack:** TypeScript, pnpm workspace, Vitest
 
@@ -15,6 +15,7 @@
 ## Task 1: Plugin Loading Error Isolation
 
 **Files:**
+
 - Modify: `src/plugins/loader.ts:334-672`
 - Test: `src/plugins/loader.test.ts`
 
@@ -49,55 +50,55 @@ Expected: FAIL — discovery throws, entire function crashes
 In `src/plugins/loader.ts`, wrap lines 364-374:
 
 ```typescript
-  let discovery: ReturnType<typeof discoverOpenClawPlugins>;
-  try {
-    discovery = discoverOpenClawPlugins({
-      workspaceDir: options.workspaceDir,
-      extraPaths: normalized.loadPaths,
-    });
-  } catch (err) {
-    logger.error(`[plugins] discovery failed: ${String(err)}`);
-    registry.diagnostics.push({
-      level: "error",
-      pluginId: undefined,
-      message: `plugin discovery failed: ${String(err)}`,
-    });
-    discovery = { candidates: [], diagnostics: [] };
-  }
+let discovery: ReturnType<typeof discoverOpenClawPlugins>;
+try {
+  discovery = discoverOpenClawPlugins({
+    workspaceDir: options.workspaceDir,
+    extraPaths: normalized.loadPaths,
+  });
+} catch (err) {
+  logger.error(`[plugins] discovery failed: ${String(err)}`);
+  registry.diagnostics.push({
+    level: "error",
+    pluginId: undefined,
+    message: `plugin discovery failed: ${String(err)}`,
+  });
+  discovery = { candidates: [], diagnostics: [] };
+}
 
-  let manifestRegistry: ReturnType<typeof loadPluginManifestRegistry>;
-  try {
-    manifestRegistry = loadPluginManifestRegistry({
-      config: cfg,
-      workspaceDir: options.workspaceDir,
-      cache: options.cache,
-      candidates: discovery.candidates,
-      diagnostics: discovery.diagnostics,
-    });
-  } catch (err) {
-    logger.error(`[plugins] manifest load failed: ${String(err)}`);
-    registry.diagnostics.push({
-      level: "error",
-      pluginId: undefined,
-      message: `manifest registry load failed: ${String(err)}`,
-    });
-    manifestRegistry = { plugins: [], diagnostics: [] };
-  }
+let manifestRegistry: ReturnType<typeof loadPluginManifestRegistry>;
+try {
+  manifestRegistry = loadPluginManifestRegistry({
+    config: cfg,
+    workspaceDir: options.workspaceDir,
+    cache: options.cache,
+    candidates: discovery.candidates,
+    diagnostics: discovery.diagnostics,
+  });
+} catch (err) {
+  logger.error(`[plugins] manifest load failed: ${String(err)}`);
+  registry.diagnostics.push({
+    level: "error",
+    pluginId: undefined,
+    message: `manifest registry load failed: ${String(err)}`,
+  });
+  manifestRegistry = { plugins: [], diagnostics: [] };
+}
 ```
 
 **Step 4: Wrap hook runner initialization (line 670)**
 
 ```typescript
-  try {
-    initializeGlobalHookRunner(registry);
-  } catch (err) {
-    logger.error(`[plugins] hook runner initialization failed: ${String(err)}`);
-    registry.diagnostics.push({
-      level: "error",
-      pluginId: undefined,
-      message: `hook runner init failed: ${String(err)}`,
-    });
-  }
+try {
+  initializeGlobalHookRunner(registry);
+} catch (err) {
+  logger.error(`[plugins] hook runner initialization failed: ${String(err)}`);
+  registry.diagnostics.push({
+    level: "error",
+    pluginId: undefined,
+    message: `hook runner init failed: ${String(err)}`,
+  });
+}
 ```
 
 **Step 5: Run test to verify it passes**
@@ -121,6 +122,7 @@ scripts/committer "fix(plugins): isolate discovery and hook-runner errors from c
 ## Task 2: Remove Legacy Packages
 
 **Files:**
+
 - Delete: `packages/clawdbot/` (entire directory)
 - Delete: `packages/moltbot/` (entire directory)
 - Check: `pnpm-workspace.yaml` (uses `packages/*` glob — auto-adjusts)
@@ -160,11 +162,13 @@ scripts/committer "chore: remove legacy clawdbot and moltbot compatibility packa
 Before moving any files, create an `src/agents/index.ts` barrel that re-exports the current public surface. This way, after we reorganize internal files into subdirectories, external imports can migrate gradually.
 
 **Files:**
+
 - Create: `src/agents/_index-snapshot.md` (documentation of current public surface)
 
 **Step 1: Generate a map of what external code imports from agents/**
 
 Run:
+
 ```bash
 grep -roh "from ['\"].*agents/[^'\"]*['\"]" src/ --include="*.ts" \
   | grep -v "src/agents/" \
@@ -190,6 +194,7 @@ scripts/committer "docs(agents): snapshot external import surface before reorgan
 Start with the smallest, most cohesive group: **model config** (21 files).
 
 **Files to move into `src/agents/model-config/`:**
+
 - `models-config.ts`
 - `models-config.providers.ts`
 - `models-config.e2e-harness.ts`
@@ -248,9 +253,10 @@ scripts/committer "refactor(agents): extract model-config into dedicated subdire
 
 ## Task 5: Reorganize agents/ — move tool-policy and bash-tools into tools/
 
-The `tools/` subdirectory already exists but top-level tool-related files (bash-tools.*, tool-policy.*, pi-tools.*) live outside it.
+The `tools/` subdirectory already exists but top-level tool-related files (bash-tools._, tool-policy._, pi-tools.\*) live outside it.
 
 **Files to move into `src/agents/tools/`:**
+
 - `bash-tools.ts`, `bash-tools.exec.ts`, `bash-tools.exec-types.ts`, `bash-tools.exec-approval-request.ts`, `bash-tools.exec-host-gateway.ts`, `bash-tools.exec-host-node.ts`, `bash-tools.exec-runtime.ts`, `bash-tools.process.ts`, `bash-tools.shared.ts`
 - `bash-process-registry.ts`
 - `tool-policy.ts`, `tool-policy-pipeline.ts`, `tool-policy-shared.ts`, `tool-policy.conformance.ts`
@@ -290,6 +296,7 @@ scripts/committer "refactor(agents): consolidate tool-policy and bash-tools into
 ## Task 6: Reorganize agents/ — move subagent files into subagents/
 
 **Files to move into `src/agents/subagents/`:**
+
 - `subagent-registry.ts`, `subagent-registry.types.ts`, `subagent-registry.store.ts`
 - `subagent-registry.mocks.shared.ts`, `subagent-registry-queries.ts`
 - `subagent-registry-state.ts`, `subagent-registry-completion.ts`
@@ -306,6 +313,7 @@ scripts/committer "refactor(agents): consolidate tool-policy and bash-tools into
 ## Task 7: Reorganize agents/ — move session files into sessions/
 
 **Files to move into `src/agents/sessions/`:**
+
 - `session-dirs.ts`, `session-slug.ts`, `session-file-repair.ts`
 - `session-transcript-repair.ts`, `session-tool-result-guard.ts`
 - `session-tool-result-guard-wrapper.ts`, `session-write-lock.ts`
@@ -319,10 +327,12 @@ scripts/committer "refactor(agents): consolidate tool-policy and bash-tools into
 ## Task 8: Reorganize agents/ — move workspace and identity files
 
 **Move into `src/agents/workspace/`:**
+
 - `workspace.ts`, `workspace-dir.ts`, `workspace-dirs.ts`
 - `workspace-run.ts`, `workspace-templates.ts`
 
 **Move into `src/agents/identity/`:**
+
 - `identity.ts`, `identity-file.ts`, `identity-avatar.ts`
 - `owner-display.ts`, `image-sanitization.ts`
 
@@ -374,17 +384,17 @@ scripts/committer "refactor(agents): complete Phase 1 reorganization of agents/ 
 
 ## Summary
 
-| Task | What | Files affected | Risk | Time |
-|------|------|---------------|------|------|
-| 1 | Plugin loading isolation | 2 | Low | 30min |
-| 2 | Remove legacy packages | 6 deleted | Low | 15min |
-| 3 | Document import surface | 1 created | None | 15min |
-| 4 | Extract model-config/ | ~30 moved + 30 shims | Medium | 1.5h |
-| 5 | Consolidate tools/ | ~40 moved + 40 shims | Medium | 1.5h |
-| 6 | Extract subagents/ | ~15 moved + 15 shims | Medium | 45min |
-| 7 | Extract sessions/ | ~10 moved + 10 shims | Low | 30min |
-| 8 | Extract workspace/ + identity/ | ~10 moved + 10 shims | Low | 30min |
-| 9 | Verify and cleanup | — | None | 30min |
-| **Total** | | | | **~6h** |
+| Task      | What                           | Files affected       | Risk   | Time    |
+| --------- | ------------------------------ | -------------------- | ------ | ------- |
+| 1         | Plugin loading isolation       | 2                    | Low    | 30min   |
+| 2         | Remove legacy packages         | 6 deleted            | Low    | 15min   |
+| 3         | Document import surface        | 1 created            | None   | 15min   |
+| 4         | Extract model-config/          | ~30 moved + 30 shims | Medium | 1.5h    |
+| 5         | Consolidate tools/             | ~40 moved + 40 shims | Medium | 1.5h    |
+| 6         | Extract subagents/             | ~15 moved + 15 shims | Medium | 45min   |
+| 7         | Extract sessions/              | ~10 moved + 10 shims | Low    | 30min   |
+| 8         | Extract workspace/ + identity/ | ~10 moved + 10 shims | Low    | 30min   |
+| 9         | Verify and cleanup             | —                    | None   | 30min   |
+| **Total** |                                |                      |        | **~6h** |
 
 After completion: `src/agents/` top-level files drop from **177 → ~30**, grouped into **7 named subdirectories** matching their domain.
