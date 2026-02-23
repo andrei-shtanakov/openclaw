@@ -309,6 +309,15 @@ export {
   migrateBaseNameToDefaultAccount,
 } from "../channels/plugins/setup-helpers.js";
 export { formatPairingApproveHint } from "../channels/plugins/helpers.js";
+export {
+  buildResolveDmPolicy,
+  buildCollectWarnings,
+  buildSetupDefaults,
+} from "../channels/plugins/security-helpers.js";
+export type {
+  BuildResolveDmPolicyOpts,
+  BuildCollectWarningsOpts,
+} from "../channels/plugins/security-helpers.js";
 export { PAIRING_APPROVED_MESSAGE } from "../channels/plugins/pairing-message.js";
 
 export type {

@@ -1,10 +1,11 @@
 import {
   buildChannelConfigSchema,
+  buildCollectWarnings,
+  buildResolveDmPolicy,
+  buildSetupDefaults,
   DEFAULT_ACCOUNT_ID,
   LineConfigSchema,
   processLineMessage,
-  resolveAllowlistProviderRuntimeGroupPolicy,
-  resolveDefaultGroupPolicy,
   type ChannelPlugin,
   type ChannelStatusIssue,
   type OpenClawConfig,
@@ -145,37 +146,21 @@ export const linePlugin: ChannelPlugin<ResolvedLineAccount> = {
         }),
   },
   security: {
-    resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(
-        (cfg.channels?.line as LineConfig | undefined)?.accounts?.[resolvedAccountId],
-      );
-      const basePath = useAccountPath
-        ? `channels.line.accounts.${resolvedAccountId}.`
-        : "channels.line.";
-      return {
-        policy: account.config.dmPolicy ?? "pairing",
-        allowFrom: account.config.allowFrom ?? [],
-        policyPath: `${basePath}dmPolicy`,
-        allowFromPath: basePath,
-        approveHint: "openclaw pairing approve line <code>",
-        normalizeEntry: (raw) => raw.replace(/^line:(?:user:)?/i, ""),
-      };
-    },
-    collectWarnings: ({ account, cfg }) => {
-      const defaultGroupPolicy = resolveDefaultGroupPolicy(cfg);
-      const { groupPolicy } = resolveAllowlistProviderRuntimeGroupPolicy({
-        providerConfigPresent: cfg.channels?.line !== undefined,
-        groupPolicy: account.config.groupPolicy,
-        defaultGroupPolicy,
-      });
-      if (groupPolicy !== "open") {
-        return [];
-      }
-      return [
-        `- LINE groups: groupPolicy="open" allows any member in groups to trigger. Set channels.line.groupPolicy="allowlist" + channels.line.groupAllowFrom to restrict senders.`,
-      ];
-    },
+    resolveDmPolicy: buildResolveDmPolicy({
+      channelKey: "line",
+      getPolicy: (account) => (account as ResolvedLineAccount).config.dmPolicy,
+      getAllowFrom: (account) => (account as ResolvedLineAccount).config.allowFrom ?? [],
+      normalizeEntry: (raw) => raw.replace(/^line:(?:user:)?/i, ""),
+    }),
+    collectWarnings: buildCollectWarnings({
+      channelKey: "line",
+      policyResolver: "allowlist",
+      getGroupAllowlist: (account) => (account as ResolvedLineAccount).config.groups,
+      warningWithAllowlist:
+        '- LINE groups: groupPolicy="open" allows any member in groups to trigger. Set channels.line.groupPolicy="allowlist" + channels.line.groupAllowFrom to restrict senders.',
+      warningWithoutAllowlist:
+        '- LINE groups: groupPolicy="open" allows any member in groups to trigger. Set channels.line.groupPolicy="allowlist" + channels.line.groupAllowFrom to restrict senders.',
+    }),
   },
   groups: {
     resolveRequireMention: ({ cfg, accountId, groupId }) => {
@@ -219,8 +204,7 @@ export const linePlugin: ChannelPlugin<ResolvedLineAccount> = {
     listGroups: async () => [],
   },
   setup: {
-    resolveAccountId: ({ accountId }) =>
-      getLineRuntime().channel.line.normalizeAccountId(accountId),
+    resolveAccountId: buildSetupDefaults("line").resolveAccountId,
     applyAccountName: ({ cfg, accountId, name }) => {
       const lineConfig = (cfg.channels?.line ?? {}) as LineConfig;
       if (accountId === DEFAULT_ACCOUNT_ID) {

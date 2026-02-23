@@ -1,20 +1,21 @@
 import {
   applyAccountNameToChannelSection,
   buildChannelConfigSchema,
+  buildCollectWarnings,
+  buildResolveDmPolicy,
+  buildSetupDefaults,
   collectDiscordAuditChannelIds,
   collectDiscordStatusIssues,
   DEFAULT_ACCOUNT_ID,
   deleteAccountFromConfigSection,
   discordOnboardingAdapter,
   DiscordConfigSchema,
-  formatPairingApproveHint,
   getChatChannelMeta,
   listDiscordAccountIds,
   listDiscordDirectoryGroupsFromConfig,
   listDiscordDirectoryPeersFromConfig,
   looksLikeDiscordTargetId,
   migrateBaseNameToDefaultAccount,
-  normalizeAccountId,
   normalizeDiscordMessagingTarget,
   normalizeDiscordOutboundTarget,
   PAIRING_APPROVED_MESSAGE,
@@ -22,8 +23,6 @@ import {
   resolveDefaultDiscordAccountId,
   resolveDiscordGroupRequireMention,
   resolveDiscordGroupToolPolicy,
-  resolveOpenProviderRuntimeGroupPolicy,
-  resolveDefaultGroupPolicy,
   setAccountEnabledInConfigSection,
   type ChannelMessageActionAdapter,
   type ChannelPlugin,
@@ -116,46 +115,22 @@ export const discordPlugin: ChannelPlugin<ResolvedDiscordAccount> = {
       resolveDiscordAccount({ cfg, accountId }).config.defaultTo?.trim() || undefined,
   },
   security: {
-    resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(cfg.channels?.discord?.accounts?.[resolvedAccountId]);
-      const allowFromPath = useAccountPath
-        ? `channels.discord.accounts.${resolvedAccountId}.dm.`
-        : "channels.discord.dm.";
-      return {
-        policy: account.config.dm?.policy ?? "pairing",
-        allowFrom: account.config.dm?.allowFrom ?? [],
-        allowFromPath,
-        approveHint: formatPairingApproveHint("discord"),
-        normalizeEntry: (raw) => raw.replace(/^(discord|user):/i, "").replace(/^<@!?(\d+)>$/, "$1"),
-      };
-    },
-    collectWarnings: ({ account, cfg }) => {
-      const warnings: string[] = [];
-      const defaultGroupPolicy = resolveDefaultGroupPolicy(cfg);
-      const { groupPolicy } = resolveOpenProviderRuntimeGroupPolicy({
-        providerConfigPresent: cfg.channels?.discord !== undefined,
-        groupPolicy: account.config.groupPolicy,
-        defaultGroupPolicy,
-      });
-      const guildEntries = account.config.guilds ?? {};
-      const guildsConfigured = Object.keys(guildEntries).length > 0;
-      const channelAllowlistConfigured = guildsConfigured;
-
-      if (groupPolicy === "open") {
-        if (channelAllowlistConfigured) {
-          warnings.push(
-            `- Discord guilds: groupPolicy="open" allows any channel not explicitly denied to trigger (mention-gated). Set channels.discord.groupPolicy="allowlist" and configure channels.discord.guilds.<id>.channels.`,
-          );
-        } else {
-          warnings.push(
-            `- Discord guilds: groupPolicy="open" with no guild/channel allowlist; any channel can trigger (mention-gated). Set channels.discord.groupPolicy="allowlist" and configure channels.discord.guilds.<id>.channels.`,
-          );
-        }
-      }
-
-      return warnings;
-    },
+    resolveDmPolicy: buildResolveDmPolicy({
+      channelKey: "discord",
+      getPolicy: (account) => (account as ResolvedDiscordAccount).config.dm?.policy,
+      getAllowFrom: (account) => (account as ResolvedDiscordAccount).config.dm?.allowFrom ?? [],
+      allowFromSubpath: "dm.",
+      normalizeEntry: (raw) => raw.replace(/^(discord|user):/i, "").replace(/^<@!?(\d+)>$/, "$1"),
+    }),
+    collectWarnings: buildCollectWarnings({
+      channelKey: "discord",
+      policyResolver: "open",
+      getGroupAllowlist: (account) => (account as ResolvedDiscordAccount).config.guilds,
+      warningWithAllowlist:
+        '- Discord guilds: groupPolicy="open" allows any channel not explicitly denied to trigger (mention-gated). Set channels.discord.groupPolicy="allowlist" and configure channels.discord.guilds.<id>.channels.',
+      warningWithoutAllowlist:
+        '- Discord guilds: groupPolicy="open" with no guild/channel allowlist; any channel can trigger (mention-gated). Set channels.discord.groupPolicy="allowlist" and configure channels.discord.guilds.<id>.channels.',
+    }),
   },
   groups: {
     resolveRequireMention: resolveDiscordGroupRequireMention,
@@ -231,14 +206,7 @@ export const discordPlugin: ChannelPlugin<ResolvedDiscordAccount> = {
   },
   actions: discordMessageActions,
   setup: {
-    resolveAccountId: ({ accountId }) => normalizeAccountId(accountId),
-    applyAccountName: ({ cfg, accountId, name }) =>
-      applyAccountNameToChannelSection({
-        cfg,
-        channelKey: "discord",
-        accountId,
-        name,
-      }),
+    ...buildSetupDefaults("discord"),
     validateInput: ({ accountId, input }) => {
       if (input.useEnv && accountId !== DEFAULT_ACCOUNT_ID) {
         return "DISCORD_BOT_TOKEN can only be used for the default account.";
