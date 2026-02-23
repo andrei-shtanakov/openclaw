@@ -1,10 +1,12 @@
 import {
   applyAccountNameToChannelSection,
   buildChannelConfigSchema,
+  buildCollectWarnings,
+  buildResolveDmPolicy,
+  buildSetupDefaults,
   collectTelegramStatusIssues,
   DEFAULT_ACCOUNT_ID,
   deleteAccountFromConfigSection,
-  formatPairingApproveHint,
   getChatChannelMeta,
   listTelegramAccountIds,
   listTelegramDirectoryGroupsFromConfig,
@@ -17,8 +19,6 @@ import {
   parseTelegramReplyToMessageId,
   parseTelegramThreadId,
   resolveDefaultTelegramAccountId,
-  resolveAllowlistProviderRuntimeGroupPolicy,
-  resolveDefaultGroupPolicy,
   resolveTelegramAccount,
   resolveTelegramGroupRequireMention,
   resolveTelegramGroupToolPolicy,
@@ -181,42 +181,21 @@ export const telegramPlugin: ChannelPlugin<ResolvedTelegramAccount, TelegramProb
     },
   },
   security: {
-    resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(cfg.channels?.telegram?.accounts?.[resolvedAccountId]);
-      const basePath = useAccountPath
-        ? `channels.telegram.accounts.${resolvedAccountId}.`
-        : "channels.telegram.";
-      return {
-        policy: account.config.dmPolicy ?? "pairing",
-        allowFrom: account.config.allowFrom ?? [],
-        policyPath: `${basePath}dmPolicy`,
-        allowFromPath: basePath,
-        approveHint: formatPairingApproveHint("telegram"),
-        normalizeEntry: (raw) => raw.replace(/^(telegram|tg):/i, ""),
-      };
-    },
-    collectWarnings: ({ account, cfg }) => {
-      const defaultGroupPolicy = resolveDefaultGroupPolicy(cfg);
-      const { groupPolicy } = resolveAllowlistProviderRuntimeGroupPolicy({
-        providerConfigPresent: cfg.channels?.telegram !== undefined,
-        groupPolicy: account.config.groupPolicy,
-        defaultGroupPolicy,
-      });
-      if (groupPolicy !== "open") {
-        return [];
-      }
-      const groupAllowlistConfigured =
-        account.config.groups && Object.keys(account.config.groups).length > 0;
-      if (groupAllowlistConfigured) {
-        return [
-          `- Telegram groups: groupPolicy="open" allows any member in allowed groups to trigger (mention-gated). Set channels.telegram.groupPolicy="allowlist" + channels.telegram.groupAllowFrom to restrict senders.`,
-        ];
-      }
-      return [
-        `- Telegram groups: groupPolicy="open" with no channels.telegram.groups allowlist; any group can add + ping (mention-gated). Set channels.telegram.groupPolicy="allowlist" + channels.telegram.groupAllowFrom or configure channels.telegram.groups.`,
-      ];
-    },
+    resolveDmPolicy: buildResolveDmPolicy({
+      channelKey: "telegram",
+      getPolicy: (account) => (account as ResolvedTelegramAccount).config.dmPolicy,
+      getAllowFrom: (account) => (account as ResolvedTelegramAccount).config.allowFrom ?? [],
+      normalizeEntry: (raw) => raw.replace(/^(telegram|tg):/i, ""),
+    }),
+    collectWarnings: buildCollectWarnings({
+      channelKey: "telegram",
+      policyResolver: "allowlist",
+      getGroupAllowlist: (account) => (account as ResolvedTelegramAccount).config.groups,
+      warningWithAllowlist:
+        '- Telegram groups: groupPolicy="open" allows any member in allowed groups to trigger (mention-gated). Set channels.telegram.groupPolicy="allowlist" + channels.telegram.groupAllowFrom to restrict senders.',
+      warningWithoutAllowlist:
+        '- Telegram groups: groupPolicy="open" with no channels.telegram.groups allowlist; any group can add + ping (mention-gated). Set channels.telegram.groupPolicy="allowlist" + channels.telegram.groupAllowFrom or configure channels.telegram.groups.',
+    }),
   },
   groups: {
     resolveRequireMention: resolveTelegramGroupRequireMention,
@@ -239,14 +218,7 @@ export const telegramPlugin: ChannelPlugin<ResolvedTelegramAccount, TelegramProb
   },
   actions: telegramMessageActions,
   setup: {
-    resolveAccountId: ({ accountId }) => normalizeAccountId(accountId),
-    applyAccountName: ({ cfg, accountId, name }) =>
-      applyAccountNameToChannelSection({
-        cfg,
-        channelKey: "telegram",
-        accountId,
-        name,
-      }),
+    ...buildSetupDefaults("telegram"),
     validateInput: ({ accountId, input }) => {
       if (input.useEnv && accountId !== DEFAULT_ACCOUNT_ID) {
         return "TELEGRAM_BOT_TOKEN can only be used for the default account.";
