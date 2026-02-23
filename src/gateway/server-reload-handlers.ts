@@ -103,9 +103,13 @@ export function createGatewayReloadHandlers(params: {
     }
 
     if (plan.reloadModels) {
-      invalidateModelCatalog();
-      await ensureOpenClawModelsJson(nextConfig);
-      params.logReload.info("model registry reloaded");
+      try {
+        invalidateModelCatalog();
+        await ensureOpenClawModelsJson(nextConfig);
+        params.logReload.info("model registry reloaded");
+      } catch (err) {
+        params.logReload.warn(`model registry reload failed: ${String(err)}`);
+      }
     }
 
     if (plan.restartChannels.size > 0) {
