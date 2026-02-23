@@ -361,17 +361,37 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
     coreGatewayHandlers: options.coreGatewayHandlers as Record<string, GatewayRequestHandler>,
   });
 
-  const discovery = discoverOpenClawPlugins({
-    workspaceDir: options.workspaceDir,
-    extraPaths: normalized.loadPaths,
-  });
-  const manifestRegistry = loadPluginManifestRegistry({
-    config: cfg,
-    workspaceDir: options.workspaceDir,
-    cache: options.cache,
-    candidates: discovery.candidates,
-    diagnostics: discovery.diagnostics,
-  });
+  let discovery: ReturnType<typeof discoverOpenClawPlugins>;
+  try {
+    discovery = discoverOpenClawPlugins({
+      workspaceDir: options.workspaceDir,
+      extraPaths: normalized.loadPaths,
+    });
+  } catch (err) {
+    logger.error(`[plugins] plugin discovery failed: ${String(err)}`);
+    registry.diagnostics.push({
+      level: "error",
+      message: `plugin discovery failed: ${String(err)}`,
+    });
+    discovery = { candidates: [], diagnostics: [] };
+  }
+  let manifestRegistry: ReturnType<typeof loadPluginManifestRegistry>;
+  try {
+    manifestRegistry = loadPluginManifestRegistry({
+      config: cfg,
+      workspaceDir: options.workspaceDir,
+      cache: options.cache,
+      candidates: discovery.candidates,
+      diagnostics: discovery.diagnostics,
+    });
+  } catch (err) {
+    logger.error(`[plugins] manifest registry loading failed: ${String(err)}`);
+    registry.diagnostics.push({
+      level: "error",
+      message: `manifest registry loading failed: ${String(err)}`,
+    });
+    manifestRegistry = { plugins: [], diagnostics: [] };
+  }
   pushDiagnostics(registry.diagnostics, manifestRegistry.diagnostics);
   warnWhenAllowlistIsOpen({
     logger,
@@ -667,6 +687,14 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
     registryCache.set(cacheKey, registry);
   }
   setActivePluginRegistry(registry, cacheKey);
-  initializeGlobalHookRunner(registry);
+  try {
+    initializeGlobalHookRunner(registry);
+  } catch (err) {
+    logger.error(`[plugins] hook runner initialization failed: ${String(err)}`);
+    registry.diagnostics.push({
+      level: "error",
+      message: `hook runner initialization failed: ${String(err)}`,
+    });
+  }
   return registry;
 }

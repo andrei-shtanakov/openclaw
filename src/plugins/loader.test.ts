@@ -2,8 +2,9 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterAll, afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { withEnv } from "../test-utils/env.js";
+import * as discoveryModule from "./discovery.js";
 import { loadOpenClawPlugins } from "./loader.js";
 
 type TempPlugin = { dir: string; file: string; id: string };
@@ -596,5 +597,33 @@ describe("loadOpenClawPlugins", () => {
     const record = registry.plugins.find((entry) => entry.id === "symlinked");
     expect(record?.status).not.toBe("loaded");
     expect(registry.diagnostics.some((entry) => entry.message.includes("escapes"))).toBe(true);
+  });
+
+  it("returns a registry with error diagnostics when discovery throws", () => {
+    process.env.OPENCLAW_BUNDLED_PLUGINS_DIR = "/nonexistent/bundled/plugins";
+    const spy = vi.spyOn(discoveryModule, "discoverOpenClawPlugins").mockImplementation(() => {
+      throw new Error("simulated discovery failure");
+    });
+
+    const errors: string[] = [];
+    const registry = loadOpenClawPlugins({
+      cache: false,
+      logger: {
+        info: () => {},
+        warn: () => {},
+        error: (msg) => errors.push(msg),
+      },
+    });
+
+    spy.mockRestore();
+
+    expect(registry).toBeDefined();
+    expect(registry.plugins).toBeDefined();
+    expect(
+      registry.diagnostics.some(
+        (d) => d.level === "error" && d.message.includes("plugin discovery failed"),
+      ),
+    ).toBe(true);
+    expect(errors.some((msg) => msg.includes("plugin discovery failed"))).toBe(true);
   });
 });
