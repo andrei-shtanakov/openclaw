@@ -28,15 +28,13 @@ OpenProse 是一种可移植的、以 Markdown 为中心的工作流格式，用
 
 ## 安装 + 启用
 
-捆绑的插件默认是禁用的。启用 OpenProse：
+OpenProse 作为独立包提供。作为插件安装：
 
 ```bash
-openclaw plugins enable open-prose
+openclaw plugins install open-prose
 ```
 
-启用插件后重启 Gateway 网关。
-
-开发/本地检出：`openclaw plugins install ./extensions/open-prose`
+安装插件后重启 Gateway 网关。
 
 相关文档：[插件](/tools/plugin)、[插件清单](/plugins/manifest)、[Skills](/tools/skills)。
 

@@ -22,14 +22,14 @@ async function setupWorkspaceWithProsePlugin() {
   const workspaceDir = await createTempWorkspaceDir();
   const managedDir = path.join(workspaceDir, ".managed");
   const bundledDir = path.join(workspaceDir, ".bundled");
-  const pluginRoot = path.join(workspaceDir, ".openclaw", "extensions", "open-prose");
+  const pluginRoot = path.join(workspaceDir, ".openclaw", "extensions", "test-plugin");
 
   await fs.mkdir(path.join(pluginRoot, "skills", "prose"), { recursive: true });
   await fs.writeFile(
     path.join(pluginRoot, "openclaw.plugin.json"),
     JSON.stringify(
       {
-        id: "open-prose",
+        id: "test-plugin",
         skills: ["./skills"],
         configSchema: { type: "object", additionalProperties: false, properties: {} },
       },
@@ -68,7 +68,7 @@ describe("loadWorkspaceSkillEntries", () => {
     const entries = loadWorkspaceSkillEntries(workspaceDir, {
       config: {
         plugins: {
-          entries: { "open-prose": { enabled: true } },
+          entries: { "test-plugin": { enabled: true } },
         },
       },
       managedSkillsDir: managedDir,

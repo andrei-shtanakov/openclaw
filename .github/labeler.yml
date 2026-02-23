@@ -228,10 +228,6 @@
   - changed-files:
       - any-glob-to-any-file:
           - "extensions/memory-lancedb/**"
-"extensions: open-prose":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "extensions/open-prose/**"
 "extensions: qwen-portal-auth":
   - changed-files:
       - any-glob-to-any-file:
