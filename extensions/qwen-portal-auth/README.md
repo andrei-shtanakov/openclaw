@@ -1,5 +1,7 @@
 # Qwen OAuth (OpenClaw plugin)
 
+> **Status: experimental** — requires testing and coverage before production use.
+
 OAuth provider plugin for **Qwen** (free-tier OAuth).
 
 ## Enable

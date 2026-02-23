@@ -1,5 +1,7 @@
 # MiniMax OAuth (OpenClaw plugin)
 
+> **Status: experimental** — requires testing and coverage before production use.
+
 OAuth provider plugin for **MiniMax** (OAuth).
 
 ## Enable

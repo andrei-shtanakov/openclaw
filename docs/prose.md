@@ -21,15 +21,13 @@ Official site: [https://www.prose.md](https://www.prose.md)
 
 ## Install + enable
 
-Bundled plugins are disabled by default. Enable OpenProse:
+OpenProse is available as a standalone package. Install it as a plugin:
 
 ```bash
-openclaw plugins enable open-prose
+openclaw plugins install open-prose
 ```
 
-Restart the Gateway after enabling the plugin.
-
-Dev/local checkout: `openclaw plugins install ./extensions/open-prose`
+Restart the Gateway after installing the plugin.
 
 Related docs: [Plugins](/tools/plugin), [Plugin manifest](/plugins/manifest), [Skills](/tools/skills).
 
