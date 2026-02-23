@@ -210,8 +210,8 @@ export function renderApp(state: AppViewState) {
             ? nothing
             : html`
           <div class="sidebar-brand">
-            <img class="sidebar-brand__logo" src="${basePath ? `${basePath}/favicon.svg` : "/favicon.svg"}" alt="OpenClaw" />
-            <span class="sidebar-brand__title">OpenClaw</span>
+            <img class="sidebar-brand__logo" src="${basePath ? `${basePath}/favicon.svg` : "/favicon.svg"}" alt="Orchid" />
+            <span class="sidebar-brand__title">Orchid</span>
           </div>
         `
         }
@@ -271,7 +271,7 @@ export function renderApp(state: AppViewState) {
           <div class="sidebar-footer__docs-block">
             <a
               class="nav-item nav-item--external"
-              href="https://docs.openclaw.ai"
+              href="https://docs.orchid.ai"
               target="_blank"
               rel="noreferrer"
               title="${t("common.docs")} (opens in new tab)"
@@ -396,7 +396,7 @@ export function renderApp(state: AppViewState) {
                 onToggleStreamMode: () => {
                   state.streamMode = !state.streamMode;
                   try {
-                    localStorage.setItem("openclaw:stream-mode", String(state.streamMode));
+                    localStorage.setItem("orchid:stream-mode", String(state.streamMode));
                   } catch {
                     /* */
                   }

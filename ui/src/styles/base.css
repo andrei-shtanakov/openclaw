@@ -564,7 +564,7 @@ html.theme-transition::view-transition-new(theme) {
   }
 }
 
-openclaw-app {
+orchid-app {
   display: block;
   position: relative;
   z-index: 1;

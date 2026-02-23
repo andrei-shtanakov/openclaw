@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { MANIFEST_KEY } from "../compat/legacy-names.js";
+import { LEGACY_MANIFEST_KEYS, MANIFEST_KEY } from "../compat/legacy-names.js";
 import {
   extractArchive,
   fileExists,
@@ -84,14 +84,19 @@ export function resolveHookInstallDir(hookId: string, hooksDir?: string): string
   return targetDirResult.path;
 }
 
-async function ensureOpenClawHooks(manifest: HookPackageManifest) {
-  const hooks = manifest[MANIFEST_KEY]?.hooks;
+async function ensureOrchidHooks(manifest: HookPackageManifest) {
+  const hooks =
+    manifest[MANIFEST_KEY]?.hooks ??
+    LEGACY_MANIFEST_KEYS.reduce<string[] | undefined>(
+      (acc, key) => acc ?? (manifest as Record<string, { hooks?: string[] }>)[key]?.hooks,
+      undefined,
+    );
   if (!Array.isArray(hooks)) {
-    throw new Error("package.json missing openclaw.hooks");
+    throw new Error("package.json missing orchid.hooks");
   }
   const list = hooks.map((e) => (typeof e === "string" ? e.trim() : "")).filter(Boolean);
   if (list.length === 0) {
-    throw new Error("package.json openclaw.hooks is empty");
+    throw new Error("package.json orchid.hooks is empty");
   }
   return list;
 }
@@ -189,7 +194,7 @@ async function installHookPackageFromDir(params: {
 
   let hookEntries: string[];
   try {
-    hookEntries = await ensureOpenClawHooks(manifest);
+    hookEntries = await ensureOrchidHooks(manifest);
   } catch (err) {
     return { ok: false, error: String(err) };
   }
@@ -222,7 +227,7 @@ async function installHookPackageFromDir(params: {
     if (!isPathInside(params.packageDir, hookDir)) {
       return {
         ok: false,
-        error: `openclaw.hooks entry escapes package directory: ${entry}`,
+        error: `orchid.hooks entry escapes package directory: ${entry}`,
       };
     }
     await validateHookDir(hookDir);
@@ -233,7 +238,7 @@ async function installHookPackageFromDir(params: {
     ) {
       return {
         ok: false,
-        error: `openclaw.hooks entry resolves outside package directory: ${entry}`,
+        error: `orchid.hooks entry resolves outside package directory: ${entry}`,
       };
     }
     const hookName = await resolveHookNameFromDir(hookDir);
@@ -353,7 +358,7 @@ export async function installHooksFromArchive(params: {
   }
   const archivePath = archivePathResult.path;
 
-  return await withTempDir("openclaw-hook-", async (tmpDir) => {
+  return await withTempDir("orchid-hook-", async (tmpDir) => {
     const extractDir = path.join(tmpDir, "extract");
     await fs.mkdir(extractDir, { recursive: true });
 
@@ -416,7 +421,7 @@ export async function installHooksFromNpmSpec(params: {
 
   logger.info?.(`Downloading ${spec}…`);
   const flowResult = await installFromNpmSpecArchive({
-    tempDirPrefix: "openclaw-hook-pack-",
+    tempDirPrefix: "orchid-hook-pack-",
     spec,
     timeoutMs,
     expectedIntegrity: params.expectedIntegrity,

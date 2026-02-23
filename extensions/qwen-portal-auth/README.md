@@ -1,4 +1,4 @@
-# Qwen OAuth (OpenClaw plugin)
+# Qwen OAuth (Orchid plugin)
 
 > **Status: experimental** — requires testing and coverage before production use.
 
@@ -9,7 +9,7 @@ OAuth provider plugin for **Qwen** (free-tier OAuth).
 Bundled plugins are disabled by default. Enable this one:
 
 ```bash
-openclaw plugins enable qwen-portal-auth
+orchid plugins enable qwen-portal-auth
 ```
 
 Restart the Gateway after enabling.
@@ -17,7 +17,7 @@ Restart the Gateway after enabling.
 ## Authenticate
 
 ```bash
-openclaw models auth login --provider qwen-portal --set-default
+orchid models auth login --provider qwen-portal --set-default
 ```
 
 ## Notes

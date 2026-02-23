@@ -73,7 +73,7 @@
 | pi-embedded-runner/runs.js        | 2    | pi-embedded-runner/ (already) |
 | pi-embedded-runner/run/params.js  | 2    | pi-embedded-runner/ (already) |
 | pi-embedded-runner/model.js       | 2    | pi-embedded-runner/ (already) |
-| openclaw-tools.js                 | 2    | subagents/                    |
+| orchid-tools.js                   | 2    | subagents/                    |
 | model-forward-compat.js           | 2    | model-config/                 |
 | huggingface-models.js             | 2    | model-config/                 |
 | cloudflare-ai-gateway.js          | 2    | model-config/                 |

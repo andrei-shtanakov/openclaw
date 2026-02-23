@@ -1,10 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { startBrowserBridgeServer, stopBrowserBridgeServer } from "./bridge-server.js";
 import type { ResolvedBrowserConfig } from "./config.js";
-import {
-  DEFAULT_OPENCLAW_BROWSER_COLOR,
-  DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME,
-} from "./constants.js";
+import { DEFAULT_ORCHID_BROWSER_COLOR, DEFAULT_ORCHID_BROWSER_PROFILE_NAME } from "./constants.js";
 
 function buildResolvedConfig(): ResolvedBrowserConfig {
   return {
@@ -17,16 +14,16 @@ function buildResolvedConfig(): ResolvedBrowserConfig {
     remoteCdpTimeoutMs: 1500,
     remoteCdpHandshakeTimeoutMs: 3000,
     extraArgs: [],
-    color: DEFAULT_OPENCLAW_BROWSER_COLOR,
+    color: DEFAULT_ORCHID_BROWSER_COLOR,
     executablePath: undefined,
     headless: true,
     noSandbox: false,
     attachOnly: true,
-    defaultProfile: DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME,
+    defaultProfile: DEFAULT_ORCHID_BROWSER_PROFILE_NAME,
     profiles: {
-      [DEFAULT_OPENCLAW_BROWSER_PROFILE_NAME]: {
+      [DEFAULT_ORCHID_BROWSER_PROFILE_NAME]: {
         cdpPort: 1,
-        color: DEFAULT_OPENCLAW_BROWSER_COLOR,
+        color: DEFAULT_ORCHID_BROWSER_COLOR,
       },
     },
   } as unknown as ResolvedBrowserConfig;
@@ -60,7 +57,7 @@ describe("startBrowserBridgeServer auth", () => {
     expect(authed.status).toBe(200);
   });
 
-  it("accepts x-openclaw-password when authPassword is set", async () => {
+  it("accepts x-orchid-password when authPassword is set", async () => {
     const bridge = await startBrowserBridgeServer({
       resolved: buildResolvedConfig(),
       authPassword: "secret-password",
@@ -71,7 +68,7 @@ describe("startBrowserBridgeServer auth", () => {
     expect(unauth.status).toBe(401);
 
     const authed = await fetch(`${bridge.baseUrl}/`, {
-      headers: { "x-openclaw-password": "secret-password" },
+      headers: { "x-orchid-password": "secret-password" },
     });
     expect(authed.status).toBe(200);
   });

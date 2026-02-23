@@ -1,18 +1,18 @@
-# Matrix (OpenClaw plugin)
+# Matrix (Orchid plugin)
 
 Matrix protocol support via @vector-im/matrix-bot-sdk with E2EE support.
 
-Docs: https://docs.openclaw.ai/channels/matrix
+Docs: https://docs.orchid.ai/channels/matrix
 
 ## Enable
 
 ```bash
-openclaw plugins enable matrix
+orchid plugins enable matrix
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -26,4 +26,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/matrix) for all options.
+See [full documentation](https://docs.orchid.ai/channels/matrix) for all options.

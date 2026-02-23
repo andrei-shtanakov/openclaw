@@ -98,16 +98,16 @@ vi.mock("@opentelemetry/semantic-conventions", () => ({
   ATTR_SERVICE_NAME: "service.name",
 }));
 
-vi.mock("openclaw/plugin-sdk", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk")>("openclaw/plugin-sdk");
+vi.mock("orchid/plugin-sdk", async () => {
+  const actual = await vi.importActual<typeof import("orchid/plugin-sdk")>("orchid/plugin-sdk");
   return {
     ...actual,
     registerLogTransport: registerLogTransportMock,
   };
 });
 
-import type { OpenClawPluginServiceContext } from "openclaw/plugin-sdk";
-import { emitDiagnosticEvent } from "openclaw/plugin-sdk";
+import type { OrchidPluginServiceContext } from "orchid/plugin-sdk";
+import { emitDiagnosticEvent } from "orchid/plugin-sdk";
 import { createDiagnosticsOtelService } from "./service.js";
 
 function createLogger() {
@@ -119,7 +119,7 @@ function createLogger() {
   };
 }
 
-function createTraceOnlyContext(endpoint: string): OpenClawPluginServiceContext {
+function createTraceOnlyContext(endpoint: string): OrchidPluginServiceContext {
   return {
     config: {
       diagnostics: {
@@ -135,7 +135,7 @@ function createTraceOnlyContext(endpoint: string): OpenClawPluginServiceContext 
       },
     },
     logger: createLogger(),
-    stateDir: "/tmp/openclaw-diagnostics-otel-test",
+    stateDir: "/tmp/orchid-diagnostics-otel-test",
   };
 }
 describe("diagnostics-otel service", () => {
@@ -162,7 +162,7 @@ describe("diagnostics-otel service", () => {
     });
 
     const service = createDiagnosticsOtelService();
-    const ctx: OpenClawPluginServiceContext = {
+    const ctx: OrchidPluginServiceContext = {
       config: {
         diagnostics: {
           enabled: true,
@@ -177,7 +177,7 @@ describe("diagnostics-otel service", () => {
         },
       },
       logger: createLogger(),
-      stateDir: "/tmp/openclaw-diagnostics-otel-test",
+      stateDir: "/tmp/orchid-diagnostics-otel-test",
     };
     await service.start(ctx);
 
@@ -221,26 +221,20 @@ describe("diagnostics-otel service", () => {
       attempt: 2,
     });
 
-    expect(telemetryState.counters.get("openclaw.webhook.received")?.add).toHaveBeenCalled();
-    expect(
-      telemetryState.histograms.get("openclaw.webhook.duration_ms")?.record,
-    ).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.message.queued")?.add).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.message.processed")?.add).toHaveBeenCalled();
-    expect(
-      telemetryState.histograms.get("openclaw.message.duration_ms")?.record,
-    ).toHaveBeenCalled();
-    expect(telemetryState.histograms.get("openclaw.queue.wait_ms")?.record).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.session.stuck")?.add).toHaveBeenCalled();
-    expect(
-      telemetryState.histograms.get("openclaw.session.stuck_age_ms")?.record,
-    ).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.run.attempt")?.add).toHaveBeenCalled();
+    expect(telemetryState.counters.get("orchid.webhook.received")?.add).toHaveBeenCalled();
+    expect(telemetryState.histograms.get("orchid.webhook.duration_ms")?.record).toHaveBeenCalled();
+    expect(telemetryState.counters.get("orchid.message.queued")?.add).toHaveBeenCalled();
+    expect(telemetryState.counters.get("orchid.message.processed")?.add).toHaveBeenCalled();
+    expect(telemetryState.histograms.get("orchid.message.duration_ms")?.record).toHaveBeenCalled();
+    expect(telemetryState.histograms.get("orchid.queue.wait_ms")?.record).toHaveBeenCalled();
+    expect(telemetryState.counters.get("orchid.session.stuck")?.add).toHaveBeenCalled();
+    expect(telemetryState.histograms.get("orchid.session.stuck_age_ms")?.record).toHaveBeenCalled();
+    expect(telemetryState.counters.get("orchid.run.attempt")?.add).toHaveBeenCalled();
 
     const spanNames = telemetryState.tracer.startSpan.mock.calls.map((call) => call[0]);
-    expect(spanNames).toContain("openclaw.webhook.processed");
-    expect(spanNames).toContain("openclaw.message.processed");
-    expect(spanNames).toContain("openclaw.session.stuck");
+    expect(spanNames).toContain("orchid.webhook.processed");
+    expect(spanNames).toContain("orchid.message.processed");
+    expect(spanNames).toContain("orchid.session.stuck");
 
     expect(registerLogTransportMock).toHaveBeenCalledTimes(1);
     expect(registeredTransports).toHaveLength(1);

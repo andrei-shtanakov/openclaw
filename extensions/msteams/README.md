@@ -1,18 +1,18 @@
-# Microsoft Teams (OpenClaw plugin)
+# Microsoft Teams (Orchid plugin)
 
 Microsoft Teams bot support via Azure Bot and Bot Framework webhook.
 
-Docs: https://docs.openclaw.ai/channels/msteams
+Docs: https://docs.orchid.ai/channels/msteams
 
 ## Enable
 
 ```bash
-openclaw plugins enable msteams
+orchid plugins enable msteams
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -27,4 +27,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/msteams) for all options.
+See [full documentation](https://docs.orchid.ai/channels/msteams) for all options.

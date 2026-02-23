@@ -46,7 +46,7 @@ is the #1 source of confusion — not the channel count.
 
 ### 1.3. Remove legacy packages
 
-- `packages/clawdbot` and `packages/moltbot` — old product names (aliases)
+- `packages/orchid` and `packages/moltbot` — old product names (aliases)
 - Remove if they are just re-exports
 
 ---
@@ -56,6 +56,7 @@ is the #1 source of confusion — not the channel count.
 ### 2.1. SQLite WAL for all state (not just sessions)
 
 Migrate to SQLite:
+
 - Sessions (JSON5 -> SQLite) — as in SUGGESTIONS.md
 - Plugin config state
 - Auth profile rotation state
@@ -93,10 +94,11 @@ WAL mode for concurrent reads + atomic writes. Auto-migration on first launch.
 `src/gateway/config-reload.ts:72` has `{ prefix: "models", kind: "none" }` — requires full restart.
 
 **Fix:**
+
 - Change to `{ prefix: "models", kind: "hot", actions: ["reload-models"] }`
 - Create `src/agents/model-reload-handler.ts` (~200 LOC)
 - Add `invalidateModelCache()` to models-config
-- CLI: `openclaw models switch <model-name>`
+- CLI: `orchid models switch <model-name>`
 
 ---
 
@@ -108,15 +110,16 @@ Instead of deleting channels — improve the abstraction layer.
 
 ```typescript
 interface ChannelAdapter {
-  connect(config: ChannelConfig): Promise<void>
-  disconnect(): Promise<void>
-  sendMessage(msg: OutboundMessage): Promise<DeliveryResult>
-  onMessage(handler: InboundHandler): void
-  healthCheck(): Promise<HealthStatus>
+  connect(config: ChannelConfig): Promise<void>;
+  disconnect(): Promise<void>;
+  sendMessage(msg: OutboundMessage): Promise<DeliveryResult>;
+  onMessage(handler: InboundHandler): void;
+  healthCheck(): Promise<HealthStatus>;
 }
 ```
 
 Benefits:
+
 - Uniform testing across all channels
 - New channels in 1-2 hours
 - Disable via config without removing code
@@ -124,13 +127,13 @@ Benefits:
 ### 3.2. Config-driven channel registry
 
 ```yaml
-# ~/.openclaw/channels.yml
+# ~/.orchid/channels.yml
 enabled:
   - telegram
   - discord
 disabled:
-  - slack      # installed but off
-  - whatsapp   # installed but off
+  - slack # installed but off
+  - whatsapp # installed but off
 ```
 
 Channels not enabled = not loaded. Zero runtime cost, code remains.
@@ -141,16 +144,16 @@ Channels not enabled = not loaded. Zero runtime cost, code remains.
 
 Only remove what is dead or duplicates:
 
-| What to remove | Reason | Files |
-|---|---|---|
-| `src/browser/` | macOS-only computer-use, niche | ~113 |
-| `src/canvas-host/` | Tied to browser module | ~8 |
-| `Swabble/` | Swift pkg, check if used in production apps | ~15 dirs |
-| `packages/clawdbot`, `packages/moltbot` | Legacy aliases | small |
-| `extensions/tlon` | Niche platform | ~28 |
-| `extensions/synology-chat` | Niche | ~13 |
-| `extensions/lobster` | Unclear purpose | ~5 |
-| Google Gemini auth extensions | If Google provider unused | ~10 |
+| What to remove                        | Reason                                      | Files    |
+| ------------------------------------- | ------------------------------------------- | -------- |
+| `src/browser/`                        | macOS-only computer-use, niche              | ~113     |
+| `src/canvas-host/`                    | Tied to browser module                      | ~8       |
+| `Swabble/`                            | Swift pkg, check if used in production apps | ~15 dirs |
+| `packages/orchid`, `packages/moltbot` | Legacy aliases                              | small    |
+| `extensions/tlon`                     | Niche platform                              | ~28      |
+| `extensions/synology-chat`            | Niche                                       | ~13      |
+| `extensions/lobster`                  | Unclear purpose                             | ~5       |
+| Google Gemini auth extensions         | If Google provider unused                   | ~10      |
 
 **Total: ~200-250 files** (vs ~1,200 in SUGGESTIONS.md). Core stays full-featured.
 
@@ -166,17 +169,17 @@ Only remove what is dead or duplicates:
 
 ## Comparison: SUGGESTIONS.md vs This Plan
 
-| Aspect | SUGGESTIONS.md | This Plan |
-|---|---|---|
-| Philosophy | Amputation | Refactoring + config |
-| Channels | 15 -> 1 | 15 -> 15 (config-driven) |
-| Web UI | Remove | Keep, decouple from gateway |
-| State | Sessions -> SQLite | All state -> SQLite |
-| agents/ dir | Untouched | Split into 2-3 modules |
-| Files removed | ~1,200 | ~200-250 |
-| Files restructured | ~50-60 | ~400-500 (agents/ split) |
-| Effort | 14-20h | 25-35h |
-| Result | Telegram bot | Full multi-channel assistant, clean architecture |
+| Aspect             | SUGGESTIONS.md     | This Plan                                        |
+| ------------------ | ------------------ | ------------------------------------------------ |
+| Philosophy         | Amputation         | Refactoring + config                             |
+| Channels           | 15 -> 1            | 15 -> 15 (config-driven)                         |
+| Web UI             | Remove             | Keep, decouple from gateway                      |
+| State              | Sessions -> SQLite | All state -> SQLite                              |
+| agents/ dir        | Untouched          | Split into 2-3 modules                           |
+| Files removed      | ~1,200             | ~200-250                                         |
+| Files restructured | ~50-60             | ~400-500 (agents/ split)                         |
+| Effort             | 14-20h             | 25-35h                                           |
+| Result             | Telegram bot       | Full multi-channel assistant, clean architecture |
 
 ---
 
@@ -194,7 +197,7 @@ Only remove what is dead or duplicates:
 
 ## Key Thesis
 
-The complexity of openclaw is NOT in the number of channels.
+The complexity of orchid is NOT in the number of channels.
 It is in the lack of boundaries between LLM orchestration, tool execution,
 and model management inside `src/agents/`.
 That is where effort should be directed.

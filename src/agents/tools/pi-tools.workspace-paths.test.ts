@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createHostSandboxFsBridge } from "../test-helpers/host-sandbox-fs-bridge.js";
 import { expectReadWriteEditTools, getTextContent } from "../test-helpers/pi-tools-fs-helpers.js";
 import { createPiToolsSandboxContext } from "../test-helpers/pi-tools-sandbox-context.js";
-import { createOpenClawCodingTools } from "./pi-tools.js";
+import { createOrchidCodingTools } from "./pi-tools.js";
 
 vi.mock("../../infra/shell-env.js", async (importOriginal) => {
   const mod = await importOriginal<typeof import("../../infra/shell-env.js")>();
@@ -22,11 +22,11 @@ async function withTempDir<T>(prefix: string, fn: (dir: string) => Promise<T>) {
 
 describe("workspace path resolution", () => {
   it("resolves relative read/write/edit paths against workspaceDir even after cwd changes", async () => {
-    await withTempDir("openclaw-ws-", async (workspaceDir) => {
-      await withTempDir("openclaw-cwd-", async (otherDir) => {
+    await withTempDir("orchid-ws-", async (workspaceDir) => {
+      await withTempDir("orchid-cwd-", async (otherDir) => {
         const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(otherDir);
         try {
-          const tools = createOpenClawCodingTools({ workspaceDir });
+          const tools = createOrchidCodingTools({ workspaceDir });
           const { readTool, writeTool, editTool } = expectReadWriteEditTools(tools);
 
           const readFile = "read.txt";
@@ -48,11 +48,9 @@ describe("workspace path resolution", () => {
           await editTool.execute("ws-edit", {
             path: editFile,
             oldText: "world",
-            newText: "openclaw",
+            newText: "orchid",
           });
-          expect(await fs.readFile(path.join(workspaceDir, editFile), "utf8")).toBe(
-            "hello openclaw",
-          );
+          expect(await fs.readFile(path.join(workspaceDir, editFile), "utf8")).toBe("hello orchid");
         } finally {
           cwdSpy.mockRestore();
         }
@@ -61,8 +59,8 @@ describe("workspace path resolution", () => {
   });
 
   it("defaults exec cwd to workspaceDir when workdir is omitted", async () => {
-    await withTempDir("openclaw-ws-", async (workspaceDir) => {
-      const tools = createOpenClawCodingTools({
+    await withTempDir("orchid-ws-", async (workspaceDir) => {
+      const tools = createOrchidCodingTools({
         workspaceDir,
         exec: { host: "gateway", ask: "off", security: "full" },
       });
@@ -86,9 +84,9 @@ describe("workspace path resolution", () => {
   });
 
   it("lets exec workdir override the workspace default", async () => {
-    await withTempDir("openclaw-ws-", async (workspaceDir) => {
-      await withTempDir("openclaw-override-", async (overrideDir) => {
-        const tools = createOpenClawCodingTools({
+    await withTempDir("orchid-ws-", async (workspaceDir) => {
+      await withTempDir("orchid-override-", async (overrideDir) => {
+        const tools = createOrchidCodingTools({
           workspaceDir,
           exec: { host: "gateway", ask: "off", security: "full" },
         });
@@ -116,8 +114,8 @@ describe("workspace path resolution", () => {
 
 describe("sandboxed workspace paths", () => {
   it("uses sandbox workspace for relative read/write/edit", async () => {
-    await withTempDir("openclaw-sandbox-", async (sandboxDir) => {
-      await withTempDir("openclaw-workspace-", async (workspaceDir) => {
+    await withTempDir("orchid-sandbox-", async (sandboxDir) => {
+      await withTempDir("orchid-workspace-", async (workspaceDir) => {
         const sandbox = createPiToolsSandboxContext({
           workspaceDir: sandboxDir,
           agentWorkspaceDir: workspaceDir,
@@ -130,7 +128,7 @@ describe("sandboxed workspace paths", () => {
         await fs.writeFile(path.join(sandboxDir, testFile), "sandbox read", "utf8");
         await fs.writeFile(path.join(workspaceDir, testFile), "workspace read", "utf8");
 
-        const tools = createOpenClawCodingTools({ workspaceDir, sandbox });
+        const tools = createOrchidCodingTools({ workspaceDir, sandbox });
         const { readTool, writeTool, editTool } = expectReadWriteEditTools(tools);
 
         const result = await readTool?.execute("sbx-read", { path: testFile });

@@ -7,8 +7,8 @@ describe("buildSandboxCreateArgs", () => {
     binds?: string[],
   ): SandboxDockerConfig {
     return {
-      image: "openclaw-sandbox:bookworm-slim",
-      containerPrefix: "openclaw-sbx-",
+      image: "orchid-sandbox:bookworm-slim",
+      containerPrefix: "orchid-sbx-",
       workdir: "/workspace",
       readOnlyRoot: false,
       tmpfs: [],
@@ -38,8 +38,8 @@ describe("buildSandboxCreateArgs", () => {
 
   it("includes hardening and resource flags", () => {
     const cfg: SandboxDockerConfig = {
-      image: "openclaw-sandbox:bookworm-slim",
-      containerPrefix: "openclaw-sbx-",
+      image: "orchid-sandbox:bookworm-slim",
+      containerPrefix: "orchid-sbx-",
       workdir: "/workspace",
       readOnlyRoot: true,
       tmpfs: ["/tmp"],
@@ -57,32 +57,32 @@ describe("buildSandboxCreateArgs", () => {
         core: "0",
       },
       seccompProfile: "/tmp/seccomp.json",
-      apparmorProfile: "openclaw-sandbox",
+      apparmorProfile: "orchid-sandbox",
       dns: ["1.1.1.1"],
       extraHosts: ["internal.service:10.0.0.5"],
     };
 
     const args = buildSandboxCreateArgs({
-      name: "openclaw-sbx-test",
+      name: "orchid-sbx-test",
       cfg,
       scopeKey: "main",
       createdAtMs: 1700000000000,
-      labels: { "openclaw.sandboxBrowser": "1" },
+      labels: { "orchid.sandboxBrowser": "1" },
     });
 
     expect(args).toEqual(
       expect.arrayContaining([
         "create",
         "--name",
-        "openclaw-sbx-test",
+        "orchid-sbx-test",
         "--label",
-        "openclaw.sandbox=1",
+        "orchid.sandbox=1",
         "--label",
-        "openclaw.sessionKey=main",
+        "orchid.sessionKey=main",
         "--label",
-        "openclaw.createdAtMs=1700000000000",
+        "orchid.createdAtMs=1700000000000",
         "--label",
-        "openclaw.sandboxBrowser=1",
+        "orchid.sandboxBrowser=1",
         "--read-only",
         "--tmpfs",
         "/tmp",
@@ -97,7 +97,7 @@ describe("buildSandboxCreateArgs", () => {
         "--security-opt",
         "seccomp=/tmp/seccomp.json",
         "--security-opt",
-        "apparmor=openclaw-sandbox",
+        "apparmor=orchid-sandbox",
         "--dns",
         "1.1.1.1",
         "--add-host",
@@ -130,8 +130,8 @@ describe("buildSandboxCreateArgs", () => {
 
   it("emits -v flags for safe custom binds", () => {
     const cfg: SandboxDockerConfig = {
-      image: "openclaw-sandbox:bookworm-slim",
-      containerPrefix: "openclaw-sbx-",
+      image: "orchid-sandbox:bookworm-slim",
+      containerPrefix: "orchid-sbx-",
       workdir: "/workspace",
       readOnlyRoot: false,
       tmpfs: [],
@@ -141,7 +141,7 @@ describe("buildSandboxCreateArgs", () => {
     };
 
     const args = buildSandboxCreateArgs({
-      name: "openclaw-sbx-binds",
+      name: "orchid-sbx-binds",
       cfg,
       scopeKey: "main",
       createdAtMs: 1700000000000,
@@ -164,31 +164,31 @@ describe("buildSandboxCreateArgs", () => {
   it.each([
     {
       name: "dangerous Docker socket bind mounts",
-      containerName: "openclaw-sbx-dangerous",
+      containerName: "orchid-sbx-dangerous",
       cfg: createSandboxConfig({}, ["/var/run/docker.sock:/var/run/docker.sock"]),
       expected: /blocked path/,
     },
     {
       name: "dangerous parent bind mounts",
-      containerName: "openclaw-sbx-dangerous-parent",
+      containerName: "orchid-sbx-dangerous-parent",
       cfg: createSandboxConfig({}, ["/run:/run"]),
       expected: /blocked path/,
     },
     {
       name: "network host mode",
-      containerName: "openclaw-sbx-host",
+      containerName: "orchid-sbx-host",
       cfg: createSandboxConfig({ network: "host" }),
       expected: /network mode "host" is blocked/,
     },
     {
       name: "seccomp unconfined",
-      containerName: "openclaw-sbx-seccomp",
+      containerName: "orchid-sbx-seccomp",
       cfg: createSandboxConfig({ seccompProfile: "unconfined" }),
       expected: /seccomp profile "unconfined" is blocked/,
     },
     {
       name: "apparmor unconfined",
-      containerName: "openclaw-sbx-apparmor",
+      containerName: "orchid-sbx-apparmor",
       cfg: createSandboxConfig({ apparmorProfile: "unconfined" }),
       expected: /apparmor profile "unconfined" is blocked/,
     },
@@ -198,8 +198,8 @@ describe("buildSandboxCreateArgs", () => {
 
   it("omits -v flags when binds is empty or undefined", () => {
     const cfg: SandboxDockerConfig = {
-      image: "openclaw-sandbox:bookworm-slim",
-      containerPrefix: "openclaw-sbx-",
+      image: "orchid-sandbox:bookworm-slim",
+      containerPrefix: "orchid-sbx-",
       workdir: "/workspace",
       readOnlyRoot: false,
       tmpfs: [],
@@ -209,7 +209,7 @@ describe("buildSandboxCreateArgs", () => {
     };
 
     const args = buildSandboxCreateArgs({
-      name: "openclaw-sbx-no-binds",
+      name: "orchid-sbx-no-binds",
       cfg,
       scopeKey: "main",
       createdAtMs: 1700000000000,

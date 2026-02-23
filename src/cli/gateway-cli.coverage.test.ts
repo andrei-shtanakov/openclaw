@@ -135,10 +135,10 @@ describe("gateway-cli coverage", () => {
       expectedOutput: [
         "Gateway Discovery",
         "Found 1 gateway(s)",
-        "- Studio openclaw.internal.",
+        "- Studio orchid.internal.",
         "  tailnet: studio.tailnet.ts.net",
-        "  host: studio.openclaw.internal",
-        "  ws: ws://studio.openclaw.internal:18789",
+        "  host: studio.orchid.internal",
+        "  ws: ws://studio.orchid.internal:18789",
       ],
     },
   ])("registers gateway discover and prints $label", async ({ args, expectedOutput }) => {
@@ -146,10 +146,10 @@ describe("gateway-cli coverage", () => {
     discoverGatewayBeacons.mockClear();
     discoverGatewayBeacons.mockResolvedValueOnce([
       {
-        instanceName: "Studio (OpenClaw)",
+        instanceName: "Studio (Orchid)",
         displayName: "Studio",
-        domain: "openclaw.internal.",
-        host: "studio.openclaw.internal",
+        domain: "orchid.internal.",
+        host: "studio.orchid.internal",
         lanHost: "studio.local",
         tailnetDns: "studio.tailnet.ts.net",
         gatewayPort: 18789,
@@ -244,7 +244,7 @@ describe("gateway-cli coverage", () => {
   });
 
   it("uses env/config port when --port is omitted", async () => {
-    await withEnvOverride({ OPENCLAW_GATEWAY_PORT: "19001" }, async () => {
+    await withEnvOverride({ ORCHID_GATEWAY_PORT: "19001" }, async () => {
       resetRuntimeCapture();
       startGatewayServer.mockClear();
 

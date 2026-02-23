@@ -1,12 +1,12 @@
-# Signal (OpenClaw channel)
+# Signal (Orchid channel)
 
 Signal support via signal-cli JSON-RPC with an external daemon.
 
-Docs: https://docs.openclaw.ai/channels/signal
+Docs: https://docs.orchid.ai/channels/signal
 
 ## Enable
 
-Signal is a built-in channel. Enable it in `openclaw.json`:
+Signal is a built-in channel. Enable it in `orchid.json`:
 
 ```json5
 {
@@ -28,4 +28,4 @@ Key fields:
 - `cliPath` — Path to signal-cli binary
 - `dmPolicy` — `"pairing"` (default), `"allowlist"`, `"open"`, or `"disabled"`
 
-See [full documentation](https://docs.openclaw.ai/channels/signal) for all options.
+See [full documentation](https://docs.orchid.ai/channels/signal) for all options.

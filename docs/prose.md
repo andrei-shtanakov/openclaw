@@ -1,5 +1,5 @@
 ---
-summary: "OpenProse: .prose workflows, slash commands, and state in OpenClaw"
+summary: "OpenProse: .prose workflows, slash commands, and state in Orchid"
 read_when:
   - You want to run or write .prose workflows
   - You want to enable the OpenProse plugin
@@ -9,7 +9,7 @@ title: "OpenProse"
 
 # OpenProse
 
-OpenProse is a portable, markdown-first workflow format for orchestrating AI sessions. In OpenClaw it ships as a plugin that installs an OpenProse skill pack plus a `/prose` slash command. Programs live in `.prose` files and can spawn multiple sub-agents with explicit control flow.
+OpenProse is a portable, markdown-first workflow format for orchestrating AI sessions. In Orchid it ships as a plugin that installs an OpenProse skill pack plus a `/prose` slash command. Programs live in `.prose` files and can spawn multiple sub-agents with explicit control flow.
 
 Official site: [https://www.prose.md](https://www.prose.md)
 
@@ -24,7 +24,7 @@ Official site: [https://www.prose.md](https://www.prose.md)
 OpenProse is available as a standalone package. Install it as a plugin:
 
 ```bash
-openclaw plugins install open-prose
+orchid plugins install open-prose
 ```
 
 Restart the Gateway after installing the plugin.
@@ -33,7 +33,7 @@ Related docs: [Plugins](/tools/plugin), [Plugin manifest](/plugins/manifest), [S
 
 ## Slash command
 
-OpenProse registers `/prose` as a user-invocable skill command. It routes to the OpenProse VM instructions and uses OpenClaw tools under the hood.
+OpenProse registers `/prose` as a user-invocable skill command. It routes to the OpenProse VM instructions and uses Orchid tools under the hood.
 
 Common commands:
 
@@ -113,11 +113,11 @@ Notes:
 `/prose run <handle/slug>` resolves to `https://p.prose.md/<handle>/<slug>`.
 Direct URLs are fetched as-is. This uses the `web_fetch` tool (or `exec` for POST).
 
-## OpenClaw runtime mapping
+## Orchid runtime mapping
 
-OpenProse programs map to OpenClaw primitives:
+OpenProse programs map to Orchid primitives:
 
-| OpenProse concept         | OpenClaw tool    |
+| OpenProse concept         | Orchid tool      |
 | ------------------------- | ---------------- |
 | Spawn session / Task tool | `sessions_spawn` |
 | File read/write           | `read` / `write` |
@@ -127,6 +127,6 @@ If your tool allowlist blocks these tools, OpenProse programs will fail. See [Sk
 
 ## Security + approvals
 
-Treat `.prose` files like code. Review before running. Use OpenClaw tool allowlists and approval gates to control side effects.
+Treat `.prose` files like code. Review before running. Use Orchid tool allowlists and approval gates to control side effects.
 
 For deterministic, approval-gated workflows, compare with [Lobster](/tools/lobster).

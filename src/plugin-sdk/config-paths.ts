@@ -1,7 +1,7 @@
-import type { OpenClawConfig } from "../config/config.js";
+import type { OrchidConfig } from "../config/config.js";
 
 export function resolveChannelAccountConfigBasePath(params: {
-  cfg: OpenClawConfig;
+  cfg: OrchidConfig;
   channelKey: string;
   accountId: string;
 }): string {

@@ -1,12 +1,12 @@
 import path from "node:path";
 import { resolveAgentWorkspaceDir } from "../agents/agent-scope.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { OrchidConfig } from "../config/config.js";
 import { resolveStateDir } from "../config/paths.js";
-import { resolvePreferredOpenClawTmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredOrchidTmpDir } from "../infra/tmp-orchid-dir.js";
 
 function buildMediaLocalRoots(stateDir: string): string[] {
   const resolvedStateDir = path.resolve(stateDir);
-  const preferredTmpDir = resolvePreferredOpenClawTmpDir();
+  const preferredTmpDir = resolvePreferredOrchidTmpDir();
   return [
     preferredTmpDir,
     path.join(resolvedStateDir, "media"),
@@ -21,7 +21,7 @@ export function getDefaultMediaLocalRoots(): readonly string[] {
 }
 
 export function getAgentScopedMediaLocalRoots(
-  cfg: OpenClawConfig,
+  cfg: OrchidConfig,
   agentId?: string,
 ): readonly string[] {
   const roots = buildMediaLocalRoots(resolveStateDir());

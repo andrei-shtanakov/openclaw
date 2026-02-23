@@ -206,7 +206,7 @@ function renderAvatar(
         alt="${assistantName}"
       />`;
     }
-    /* Use OpenClaw logo instead of emoji (e.g. ✨) for assistant avatar */
+    /* Use Orchid logo instead of emoji (e.g. ✨) for assistant avatar */
     const logoUrl = basePath ? agentLogoUrl(basePath) : "";
     if (logoUrl) {
       return html`<img

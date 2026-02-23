@@ -1,12 +1,12 @@
-# WhatsApp (OpenClaw channel)
+# WhatsApp (Orchid channel)
 
 WhatsApp support via WhatsApp Web (Baileys) gateway session.
 
-Docs: https://docs.openclaw.ai/channels/whatsapp
+Docs: https://docs.orchid.ai/channels/whatsapp
 
 ## Enable
 
-WhatsApp is a built-in channel. Enable it in `openclaw.json`:
+WhatsApp is a built-in channel. Enable it in `orchid.json`:
 
 ```json5
 {
@@ -26,4 +26,4 @@ Key fields:
 - `allowFrom` — E.164-style phone numbers for DM allowlist
 - `groupPolicy` — `"allowlist"` (default), `"open"`, or `"disabled"`
 
-See [full documentation](https://docs.openclaw.ai/channels/whatsapp) for all options.
+See [full documentation](https://docs.orchid.ai/channels/whatsapp) for all options.

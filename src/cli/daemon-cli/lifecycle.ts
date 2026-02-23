@@ -119,8 +119,8 @@ export async function runDaemonRestart(opts: DaemonLifecycleOptions = {}): Promi
       }
 
       fail("Gateway restart failed health checks.", [
-        formatCliCommand("openclaw gateway status --probe --deep"),
-        formatCliCommand("openclaw doctor"),
+        formatCliCommand("orchid gateway status --probe --deep"),
+        formatCliCommand("orchid doctor"),
       ]);
     },
   });

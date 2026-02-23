@@ -13,16 +13,16 @@ describe("runCommandWithTimeout", () => {
   });
 
   it("merges custom env with process.env", async () => {
-    await withEnvAsync({ OPENCLAW_BASE_ENV: "base" }, async () => {
+    await withEnvAsync({ ORCHID_BASE_ENV: "base" }, async () => {
       const result = await runCommandWithTimeout(
         [
           process.execPath,
           "-e",
-          'process.stdout.write((process.env.OPENCLAW_BASE_ENV ?? "") + "|" + (process.env.OPENCLAW_TEST_ENV ?? ""))',
+          'process.stdout.write((process.env.ORCHID_BASE_ENV ?? "") + "|" + (process.env.ORCHID_TEST_ENV ?? ""))',
         ],
         {
           timeoutMs: 5_000,
-          env: { OPENCLAW_TEST_ENV: "ok" },
+          env: { ORCHID_TEST_ENV: "ok" },
         },
       );
 

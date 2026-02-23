@@ -1,4 +1,4 @@
-# Предложения по доработке проекта openclaw
+# Предложения по доработке проекта orchid
 
 ## Стратегия: радикальное упрощение
 
@@ -13,15 +13,15 @@
 
 **Source directories:**
 
-| Директория | Файлов | Описание |
-|-----------|--------|----------|
-| `src/discord/` | 114 | Discord bot |
-| `src/slack/` | 82 | Slack integration |
-| `src/web/` | 78 | WhatsApp Web (Baileys) |
-| `src/line/` | 42 | LINE messenger |
-| `src/signal/` | 31 | Signal protocol |
-| `src/imessage/` | 16 | iMessage bridge |
-| `src/whatsapp/` | 4 | WhatsApp core |
+| Директория      | Файлов | Описание               |
+| --------------- | ------ | ---------------------- |
+| `src/discord/`  | 114    | Discord bot            |
+| `src/slack/`    | 82     | Slack integration      |
+| `src/web/`      | 78     | WhatsApp Web (Baileys) |
+| `src/line/`     | 42     | LINE messenger         |
+| `src/signal/`   | 31     | Signal protocol        |
+| `src/imessage/` | 16     | iMessage bridge        |
+| `src/whatsapp/` | 4      | WhatsApp core          |
 
 **Extensions (удалить все кроме `extensions/telegram/`):**
 
@@ -37,13 +37,13 @@ extensions/zalo/           extensions/zalouser/      extensions/nextcloud-talk/
 
 ### 1.2. Что модифицировать
 
-| Файл | Изменение |
-|------|-----------|
-| `src/channels/registry.ts` | `CHAT_CHANNEL_ORDER` → только `["telegram"]` |
-| `src/channels/plugins/catalog.ts` | Удалить регистрации каналов кроме Telegram |
-| `src/cli/channels-cli.ts` | Упростить до Telegram-only flow |
-| `src/cli/channel-auth.ts` | Удалить non-Telegram auth paths |
-| `src/config/` | Удалить типы конфигов каналов (types.googlechat.ts и др.) |
+| Файл                              | Изменение                                                 |
+| --------------------------------- | --------------------------------------------------------- |
+| `src/channels/registry.ts`        | `CHAT_CHANNEL_ORDER` → только `["telegram"]`              |
+| `src/channels/plugins/catalog.ts` | Удалить регистрации каналов кроме Telegram                |
+| `src/cli/channels-cli.ts`         | Упростить до Telegram-only flow                           |
+| `src/cli/channel-auth.ts`         | Удалить non-Telegram auth paths                           |
+| `src/config/`                     | Удалить типы конфигов каналов (types.googlechat.ts и др.) |
 
 ### 1.3. Порядок удаления
 
@@ -62,6 +62,7 @@ extensions/zalo/           extensions/zalouser/      extensions/nextcloud-talk/
 ### 2.1. Файлы на удаление
 
 **Gemini LLM provider:**
+
 ```
 src/infra/gemini-auth.ts
 src/infra/provider-usage.fetch.gemini.ts
@@ -77,6 +78,7 @@ src/commands/auth-choice.apply.google-antigravity.ts
 ```
 
 **Extensions:**
+
 ```
 extensions/google-gemini-cli-auth/
 extensions/google-antigravity-auth/
@@ -85,12 +87,12 @@ extensions/googlechat/
 
 ### 2.2. Файлы на модификацию
 
-| Файл | Изменение |
-|------|-----------|
-| `src/agents/models-config.ts` | Удалить Gemini provider normalization |
-| `src/agents/models-config.providers.ts` | Удалить Google provider handling |
-| `src/config/defaults.ts` | Удалить Google service defaults |
-| `src/memory/manager-embedding-ops.ts` | Удалить Gemini embedding fallback |
+| Файл                                    | Изменение                             |
+| --------------------------------------- | ------------------------------------- |
+| `src/agents/models-config.ts`           | Удалить Gemini provider normalization |
+| `src/agents/models-config.providers.ts` | Удалить Google provider handling      |
+| `src/config/defaults.ts`                | Удалить Google service defaults       |
+| `src/memory/manager-embedding-ops.ts`   | Удалить Gemini embedding fallback     |
 
 **Итого:** ~30-35 файлов удалить, ~15-20 модифицировать. **Усилия:** 1-2ч.
 
@@ -100,14 +102,14 @@ extensions/googlechat/
 
 ### 3.1. Что удалить
 
-| Директория | Файлов | Описание |
-|-----------|--------|----------|
-| `ui/` | ~200 | Весь React/Angular SPA frontend |
-| `src/browser/` | 99 | Browser automation (macOS app) |
-| `src/canvas-host/` | 8 | Drawing surface (macOS app) |
-| `extensions/device-pair/` | — | Device pairing UI |
-| `extensions/talk-voice/` | — | Voice call UI |
-| `extensions/voice-call/` | — | Voice call extension |
+| Директория                | Файлов | Описание                        |
+| ------------------------- | ------ | ------------------------------- |
+| `ui/`                     | ~200   | Весь React/Angular SPA frontend |
+| `src/browser/`            | 99     | Browser automation (macOS app)  |
+| `src/canvas-host/`        | 8      | Drawing surface (macOS app)     |
+| `extensions/device-pair/` | —      | Device pairing UI               |
+| `extensions/talk-voice/`  | —      | Voice call UI                   |
+| `extensions/voice-call/`  | —      | Voice call extension            |
 
 ### 3.2. Что сохранить
 
@@ -117,13 +119,13 @@ extensions/googlechat/
 
 ### 3.3. Что модифицировать
 
-| Файл | Изменение |
-|------|-----------|
-| `src/gateway/server.impl.ts` | Удалить web UI route handling |
-| `src/gateway/server-runtime-config.ts` | `controlUiEnabled = false` всегда |
-| `src/gateway/control-ui.ts` | Удалить serving static assets |
-| `src/gateway/control-ui-csp.ts` | Удалить (CSP не нужен без web) |
-| `package.json` | Удалить Vite, React, Angular, UI зависимости |
+| Файл                                   | Изменение                                    |
+| -------------------------------------- | -------------------------------------------- |
+| `src/gateway/server.impl.ts`           | Удалить web UI route handling                |
+| `src/gateway/server-runtime-config.ts` | `controlUiEnabled = false` всегда            |
+| `src/gateway/control-ui.ts`            | Удалить serving static assets                |
+| `src/gateway/control-ui-csp.ts`        | Удалить (CSP не нужен без web)               |
+| `package.json`                         | Удалить Vite, React, Angular, UI зависимости |
 
 **Итого:** ~350-400 файлов удалить, ~10-15 модифицировать. **Усилия:** 1-1.5ч.
 
@@ -134,11 +136,12 @@ extensions/googlechat/
 ### 4.1. Текущее ограничение
 
 `src/gateway/config-reload.ts:72`:
+
 ```typescript
 { prefix: "models", kind: "none" },  // ← требует ПОЛНЫЙ RESTART!
 ```
 
-Модели загружаются при старте gateway через `ensureOpenClawModelsJson()`. Изменение модели = перезапуск.
+Модели загружаются при старте gateway через `ensureOrchidModelsJson()`. Изменение модели = перезапуск.
 
 ### 4.2. Решение: hot-reload для model config
 
@@ -156,14 +159,14 @@ export function setupModelReloadHandler(gateway: GatewayContext) {
 
 **Модифицировать:**
 
-| Файл | Изменение |
-|------|-----------|
-| `src/gateway/config-reload.ts` | `{ prefix: "models", kind: "hot", actions: ["reload-models"] }` |
-| `src/gateway/server-reload-handlers.ts` | Зарегистрировать model reload handler |
-| `src/agents/models-config.ts` | Добавить `invalidateModelCache()` |
-| `src/agents/models-config.providers.ts` | Сделать provider registry обновляемым |
+| Файл                                    | Изменение                                                       |
+| --------------------------------------- | --------------------------------------------------------------- |
+| `src/gateway/config-reload.ts`          | `{ prefix: "models", kind: "hot", actions: ["reload-models"] }` |
+| `src/gateway/server-reload-handlers.ts` | Зарегистрировать model reload handler                           |
+| `src/agents/models-config.ts`           | Добавить `invalidateModelCache()`                               |
+| `src/agents/models-config.providers.ts` | Сделать provider registry обновляемым                           |
 
-**CLI:** `openclaw models switch <model-name>` — переключение без рестарта.
+**CLI:** `orchid models switch <model-name>` — переключение без рестарта.
 
 **Усилия:** 3-4ч (создание handler + интеграция + тесты).
 
@@ -173,7 +176,7 @@ export function setupModelReloadHandler(gateway: GatewayContext) {
 
 ### 5.1. Текущая архитектура
 
-- Sessions в `~/.openclaw/state/sessions/default.json5`
+- Sessions в `~/.orchid/state/sessions/default.json5`
 - Весь файл загружается в память при старте
 - Atomic write через `writeFileAtomically()`
 - Нет locking, нет query — только full read/write
@@ -208,32 +211,32 @@ CREATE TABLE session_messages (
 
 **Создать:**
 
-| Файл | LOC | Назначение |
-|------|-----|-----------|
-| `src/config/session-store-sqlite.ts` | 300-400 | SQLite schema + CRUD |
-| `src/config/migrate-sessions.ts` | 200-300 | JSON5 → SQLite миграция |
-| `src/commands/migrate-sessions-cli.ts` | 100-150 | CLI команда миграции |
+| Файл                                   | LOC     | Назначение              |
+| -------------------------------------- | ------- | ----------------------- |
+| `src/config/session-store-sqlite.ts`   | 300-400 | SQLite schema + CRUD    |
+| `src/config/migrate-sessions.ts`       | 200-300 | JSON5 → SQLite миграция |
+| `src/commands/migrate-sessions-cli.ts` | 100-150 | CLI команда миграции    |
 
 **Модифицировать:**
 
-| Файл | Изменение |
-|------|-----------|
+| Файл                     | Изменение                                         |
+| ------------------------ | ------------------------------------------------- |
 | `src/config/sessions.ts` | Dual backend: SQLite (primary) + JSON5 (fallback) |
-| `src/config/config.ts` | Добавить `sessionStore?: "json5" \| "sqlite"` |
-| `package.json` | Добавить `better-sqlite3` |
+| `src/config/config.ts`   | Добавить `sessionStore?: "json5" \| "sqlite"`     |
+| `package.json`           | Добавить `better-sqlite3`                         |
 
 ### 5.4. Auto-migration при первом запуске
 
 ```typescript
 async function loadSessionStore() {
-    if (await sqliteDbExists()) {
-        return sqliteStore.listSessions(agentId);
-    }
-    // Fallback: читаем JSON5, автоматически мигрируем
-    const entries = await readJson5Sessions();
-    await migrateToSQLite(entries);
-    // JSON5 файл сохраняется как backup
-    return entries;
+  if (await sqliteDbExists()) {
+    return sqliteStore.listSessions(agentId);
+  }
+  // Fallback: читаем JSON5, автоматически мигрируем
+  const entries = await readJson5Sessions();
+  await migrateToSQLite(entries);
+  // JSON5 файл сохраняется как backup
+  return entries;
 }
 ```
 
@@ -246,6 +249,7 @@ async function loadSessionStore() {
 ### 6.1. Существующая инфраструктура
 
 Уже есть migration framework:
+
 - `src/infra/state-migrations.ts` (~500 LOC) — оркестратор миграций
 - `src/config/legacy.migrations.part-{1,2,3}.ts` — конкретные миграции
 - `src/commands/doctor-state-migrations.ts` — CLI
@@ -256,30 +260,31 @@ async function loadSessionStore() {
 
 ```typescript
 registerMigration({
-    id: "sessions-json5-to-sqlite-v1",
-    version: "2026.3",
+  id: "sessions-json5-to-sqlite-v1",
+  version: "2026.3",
 
-    async detect(): Promise<boolean> {
-        return fileExists(jsonPath) && !fileExists(dbPath);
-    },
+  async detect(): Promise<boolean> {
+    return fileExists(jsonPath) && !fileExists(dbPath);
+  },
 
-    async migrate({ backup, dryRun }): Promise<MigrationResult> {
-        if (backup) await backupFile(jsonPath);
-        return await migrateSessionsToSQLite({ jsonPath, dbPath, dryRun });
-    },
+  async migrate({ backup, dryRun }): Promise<MigrationResult> {
+    if (backup) await backupFile(jsonPath);
+    return await migrateSessionsToSQLite({ jsonPath, dbPath, dryRun });
+  },
 
-    async rollback(): Promise<void> {
-        await restoreBackup(jsonPath);
-        await remove(dbPath);
-    }
+  async rollback(): Promise<void> {
+    await restoreBackup(jsonPath);
+    await remove(dbPath);
+  },
 });
 ```
 
 **CLI:**
+
 ```bash
-openclaw config doctor --auto-migrate          # автоматически
-openclaw config doctor --list-migrations       # список
-openclaw config doctor --rollback <migration>  # откат
+orchid config doctor --auto-migrate          # автоматически
+orchid config doctor --list-migrations       # список
+orchid config doctor --rollback <migration>  # откат
 ```
 
 **Усилия:** 1-1.5ч (framework уже есть).
@@ -302,25 +307,25 @@ openclaw config doctor --rollback <migration>  # откат
 
 ### 7.3. Hardcoded limits (LOW)
 
-| Файл | Значение | Предложение |
-|------|----------|-------------|
-| `src/gateway/auth-rate-limit.ts:78` | `MAX_ATTEMPTS = 10` | → config |
-| `src/gateway/server-channels.ts:18` | `MAX_RESTART_ATTEMPTS = 10` | → config |
-| `src/agents/pi-embedded-runner/run.ts:494` | `MAX_OVERFLOW_COMPACTION_ATTEMPTS = 3` | → config |
-| `src/memory/manager-embedding-ops.ts:29` | `EMBEDDING_RETRY_MAX_ATTEMPTS = 3` | → config |
+| Файл                                       | Значение                               | Предложение |
+| ------------------------------------------ | -------------------------------------- | ----------- |
+| `src/gateway/auth-rate-limit.ts:78`        | `MAX_ATTEMPTS = 10`                    | → config    |
+| `src/gateway/server-channels.ts:18`        | `MAX_RESTART_ATTEMPTS = 10`            | → config    |
+| `src/agents/pi-embedded-runner/run.ts:494` | `MAX_OVERFLOW_COMPACTION_ATTEMPTS = 3` | → config    |
+| `src/memory/manager-embedding-ops.ts:29`   | `EMBEDDING_RETRY_MAX_ATTEMPTS = 3`     | → config    |
 
 ---
 
 ## 8. Что НЕ делать
 
-| Идея | Причина отказа |
-|------|---------------|
-| Prometheus metrics | Для personal tool достаточно Pino-логов |
-| Встроенный cost tracking | Пользователь видит billing у провайдера |
-| Process isolation для plugins | Try-catch per-plugin достаточен |
-| Distributed tracing (OpenTelemetry) | Single-process, single-user — overkill |
+| Идея                                | Причина отказа                               |
+| ----------------------------------- | -------------------------------------------- |
+| Prometheus metrics                  | Для personal tool достаточно Pino-логов      |
+| Встроенный cost tracking            | Пользователь видит billing у провайдера      |
+| Process isolation для plugins       | Try-catch per-plugin достаточен              |
+| Distributed tracing (OpenTelemetry) | Single-process, single-user — overkill       |
 | DAG orchestration (из Maestro/hive) | Openclaw маршрутизирует сообщения, не задачи |
-| MITM proxy (из pylon/cc-wiretap) | Контролирует LLM вызовы напрямую |
+| MITM proxy (из pylon/cc-wiretap)    | Контролирует LLM вызовы напрямую             |
 
 ---
 
@@ -346,7 +351,7 @@ openclaw config doctor --rollback <migration>  # откат
 1. Создать `model-reload-handler.ts`
 2. Изменить `config-reload.ts`: `models` kind → `"hot"`
 3. Добавить `invalidateModelCache()` в models-config
-4. CLI команда `openclaw models switch`
+4. CLI команда `orchid models switch`
 5. Тесты reload pipeline
 
 ### Phase 4: SQLite sessions + миграция (5-6ч)
@@ -355,7 +360,7 @@ openclaw config doctor --rollback <migration>  # откат
 2. Создать migration tool (JSON5 → SQLite)
 3. Зарегистрировать в existing migration framework
 4. Auto-migration при первом запуске
-5. CLI: `openclaw config doctor --auto-migrate`
+5. CLI: `orchid config doctor --auto-migrate`
 6. Тесты: round-trip, concurrent access, rollback
 
 ### Phase 5: Cleanup (1-2ч)
@@ -369,13 +374,13 @@ openclaw config doctor --rollback <migration>  # откат
 
 ## 10. Итоговая оценка
 
-| Метрика | До | После |
-|---------|-----|-------|
-| Файлов в src | ~3,440 | ~2,000-2,200 |
-| Extensions | 38 | 1 (telegram) |
-| Каналов | 15+ | 1 (Telegram) |
-| UI targets | Web + CLI + TUI | CLI + TUI |
+| Метрика       | До                                | После                                 |
+| ------------- | --------------------------------- | ------------------------------------- |
+| Файлов в src  | ~3,440                            | ~2,000-2,200                          |
+| Extensions    | 38                                | 1 (telegram)                          |
+| Каналов       | 15+                               | 1 (Telegram)                          |
+| UI targets    | Web + CLI + TUI                   | CLI + TUI                             |
 | LLM providers | Anthropic + OpenAI + Gemini + ... | Anthropic + OpenAI + ... (без Google) |
-| Session store | JSON5 (in-memory) | SQLite (WAL) |
-| LLM switch | Requires restart | Hot-swap |
-| Усилия | — | 14-20ч (~2-3 дня) |
+| Session store | JSON5 (in-memory)                 | SQLite (WAL)                          |
+| LLM switch    | Requires restart                  | Hot-swap                              |
+| Усилия        | —                                 | 14-20ч (~2-3 дня)                     |

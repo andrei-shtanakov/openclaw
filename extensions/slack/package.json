@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/slack",
+  "name": "@orchid/slack",
   "version": "2026.2.22",
   "private": true,
-  "description": "OpenClaw Slack channel plugin",
+  "description": "Orchid Slack channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "orchid": "workspace:*"
   },
-  "openclaw": {
+  "orchid": {
     "extensions": [
       "./index.ts"
     ]

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { OrchidConfig } from "../../config/config.js";
 import type { SandboxContext } from "../sandbox.js";
 import type { SandboxFsBridge, SandboxResolvedPath } from "../sandbox/fs-bridge.js";
 import { createSandboxFsBridgeFromResolver } from "../test-helpers/host-sandbox-fs-bridge.js";
@@ -12,7 +12,7 @@ import {
   getTextContent,
 } from "../test-helpers/pi-tools-fs-helpers.js";
 import { createPiToolsSandboxContext } from "../test-helpers/pi-tools-sandbox-context.js";
-import { createOpenClawCodingTools } from "./pi-tools.js";
+import { createOrchidCodingTools } from "./pi-tools.js";
 
 vi.mock("../../infra/shell-env.js", async (importOriginal) => {
   const mod = await importOriginal<typeof import("../../infra/shell-env.js")>();
@@ -76,7 +76,7 @@ function createSandbox(params: {
 async function withUnsafeMountedSandboxHarness(
   run: (ctx: { sandboxRoot: string; agentRoot: string; sandbox: SandboxContext }) => Promise<void>,
 ) {
-  const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sbx-mounts-"));
+  const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "orchid-sbx-mounts-"));
   const sandboxRoot = path.join(stateDir, "sandbox");
   const agentRoot = path.join(stateDir, "agent");
   await fs.mkdir(sandboxRoot, { recursive: true });
@@ -95,7 +95,7 @@ describe("tools.fs.workspaceOnly", () => {
     await withUnsafeMountedSandboxHarness(async ({ sandboxRoot, agentRoot, sandbox }) => {
       await fs.writeFile(path.join(agentRoot, "secret.txt"), "shh", "utf8");
 
-      const tools = createOpenClawCodingTools({ sandbox, workspaceDir: sandboxRoot });
+      const tools = createOrchidCodingTools({ sandbox, workspaceDir: sandboxRoot });
       const { readTool, writeTool } = expectReadWriteTools(tools);
 
       const readResult = await readTool?.execute("t1", { path: "/agent/secret.txt" });
@@ -110,8 +110,8 @@ describe("tools.fs.workspaceOnly", () => {
     await withUnsafeMountedSandboxHarness(async ({ sandboxRoot, agentRoot, sandbox }) => {
       await fs.writeFile(path.join(agentRoot, "secret.txt"), "shh", "utf8");
 
-      const cfg = { tools: { fs: { workspaceOnly: true } } } as unknown as OpenClawConfig;
-      const tools = createOpenClawCodingTools({ sandbox, workspaceDir: sandboxRoot, config: cfg });
+      const cfg = { tools: { fs: { workspaceOnly: true } } } as unknown as OrchidConfig;
+      const tools = createOrchidCodingTools({ sandbox, workspaceDir: sandboxRoot, config: cfg });
       const { readTool, writeTool, editTool } = expectReadWriteEditTools(tools);
 
       await expect(readTool?.execute("t1", { path: "/agent/secret.txt" })).rejects.toThrow(

@@ -1,11 +1,11 @@
-# Thread Ownership (OpenClaw plugin)
+# Thread Ownership (Orchid plugin)
 
 Prevents multiple agents from responding in the same Slack thread. Uses HTTP calls to the slack-forwarder ownership API.
 
 ## Enable
 
 ```bash
-openclaw plugins enable thread-ownership
+orchid plugins enable thread-ownership
 ```
 
 ## Config

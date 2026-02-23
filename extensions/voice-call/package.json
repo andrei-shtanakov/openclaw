@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/voice-call",
+  "name": "@orchid/voice-call",
   "version": "2026.2.22",
-  "description": "OpenClaw voice-call plugin",
+  "description": "Orchid voice-call plugin",
   "type": "module",
   "dependencies": {
     "@sinclair/typebox": "0.34.48",
@@ -9,9 +9,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "orchid": "workspace:*"
   },
-  "openclaw": {
+  "orchid": {
     "extensions": [
       "./index.ts"
     ]

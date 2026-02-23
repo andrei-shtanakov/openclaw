@@ -1,16 +1,16 @@
 {
-  "name": "@openclaw/memory-core",
+  "name": "@orchid/memory-core",
   "version": "2026.2.22",
   "private": true,
-  "description": "OpenClaw core memory search plugin",
+  "description": "Orchid core memory search plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "orchid": "workspace:*"
   },
   "peerDependencies": {
-    "openclaw": ">=2026.1.26"
+    "orchid": ">=2026.1.26"
   },
-  "openclaw": {
+  "orchid": {
     "extensions": [
       "./index.ts"
     ]

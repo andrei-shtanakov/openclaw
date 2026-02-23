@@ -1,18 +1,18 @@
-# Mattermost (OpenClaw plugin)
+# Mattermost (Orchid plugin)
 
 Mattermost bot support via token and WebSocket.
 
-Docs: https://docs.openclaw.ai/channels/mattermost
+Docs: https://docs.orchid.ai/channels/mattermost
 
 ## Enable
 
 ```bash
-openclaw plugins enable mattermost
+orchid plugins enable mattermost
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -26,4 +26,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/mattermost) for all options.
+See [full documentation](https://docs.orchid.ai/channels/mattermost) for all options.

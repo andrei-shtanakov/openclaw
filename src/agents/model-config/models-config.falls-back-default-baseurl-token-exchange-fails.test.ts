@@ -9,7 +9,7 @@ import {
   withUnsetCopilotTokenEnv,
   withModelsTempHome as withTempHome,
 } from "./models-config.e2e-harness.js";
-import { ensureOpenClawModelsJson } from "./models-config.js";
+import { ensureOrchidModelsJson } from "./models-config.js";
 
 installModelsConfigTestHooks({ restoreFetch: true });
 
@@ -32,9 +32,9 @@ describe("models-config", () => {
         });
         globalThis.fetch = fetchMock as unknown as typeof fetch;
 
-        await ensureOpenClawModelsJson({ models: { providers: {} } });
+        await ensureOrchidModelsJson({ models: { providers: {} } });
 
-        const agentDir = path.join(process.env.HOME ?? "", ".openclaw", "agents", "main", "agent");
+        const agentDir = path.join(process.env.HOME ?? "", ".orchid", "agents", "main", "agent");
         expect(await readCopilotBaseUrl(agentDir)).toBe(DEFAULT_COPILOT_API_BASE_URL);
       });
     });
@@ -64,7 +64,7 @@ describe("models-config", () => {
           ),
         );
 
-        await ensureOpenClawModelsJson({ models: { providers: {} } }, agentDir);
+        await ensureOrchidModelsJson({ models: { providers: {} } }, agentDir);
 
         expect(await readCopilotBaseUrl(agentDir)).toBe("https://api.copilot.example");
       });

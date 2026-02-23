@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { telegramPlugin } from "../../extensions/telegram/src/channel.js";
 import { setTelegramRuntime } from "../../extensions/telegram/src/runtime.js";
 import * as replyModule from "../auto-reply/reply.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { OrchidConfig } from "../config/config.js";
 import { setActivePluginRegistry } from "../plugins/runtime.js";
 import { createPluginRuntime } from "../plugins/runtime/index.js";
 import { createTestRegistry } from "../test-utils/channel-plugins.js";
@@ -42,8 +42,8 @@ describe("Ghost reminder bug (issue #13317)", () => {
   const createConfig = async (params: {
     tmpDir: string;
     storePath: string;
-  }): Promise<{ cfg: OpenClawConfig; sessionKey: string }> => {
-    const cfg: OpenClawConfig = {
+  }): Promise<{ cfg: OrchidConfig; sessionKey: string }> => {
+    const cfg: OrchidConfig = {
       agents: {
         defaults: {
           workspace: params.tmpDir,
@@ -137,7 +137,7 @@ describe("Ghost reminder bug (issue #13317)", () => {
 
   it("does not use CRON_EVENT_PROMPT when only a HEARTBEAT_OK event is present", async () => {
     const { result, sendTelegram, calledCtx, replyCallCount } = await runHeartbeatCase({
-      tmpPrefix: "openclaw-ghost-",
+      tmpPrefix: "orchid-ghost-",
       replyText: "Heartbeat check-in",
       reason: "cron:test-job",
       enqueue: (sessionKey) => {
@@ -154,7 +154,7 @@ describe("Ghost reminder bug (issue #13317)", () => {
 
   it("uses CRON_EVENT_PROMPT when an actionable cron event exists", async () => {
     const { result, sendTelegram, calledCtx } = await runCronReminderCase(
-      "openclaw-cron-",
+      "orchid-cron-",
       (sessionKey) => {
         enqueueSystemEvent("Reminder: Check Base Scout results", { sessionKey });
       },
@@ -166,7 +166,7 @@ describe("Ghost reminder bug (issue #13317)", () => {
 
   it("uses CRON_EVENT_PROMPT when cron events are mixed with heartbeat noise", async () => {
     const { result, sendTelegram, calledCtx } = await runCronReminderCase(
-      "openclaw-cron-mixed-",
+      "orchid-cron-mixed-",
       (sessionKey) => {
         enqueueSystemEvent("HEARTBEAT_OK", { sessionKey });
         enqueueSystemEvent("Reminder: Check Base Scout results", { sessionKey });
@@ -179,7 +179,7 @@ describe("Ghost reminder bug (issue #13317)", () => {
 
   it("uses CRON_EVENT_PROMPT for tagged cron events on interval wake", async () => {
     const { result, sendTelegram, calledCtx, replyCallCount } = await runHeartbeatCase({
-      tmpPrefix: "openclaw-cron-interval-",
+      tmpPrefix: "orchid-cron-interval-",
       replyText: "Relay this cron update now",
       reason: "interval",
       enqueue: (sessionKey) => {

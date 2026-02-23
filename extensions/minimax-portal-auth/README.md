@@ -1,4 +1,4 @@
-# MiniMax OAuth (OpenClaw plugin)
+# MiniMax OAuth (Orchid plugin)
 
 > **Status: experimental** — requires testing and coverage before production use.
 
@@ -9,19 +9,19 @@ OAuth provider plugin for **MiniMax** (OAuth).
 Bundled plugins are disabled by default. Enable this one:
 
 ```bash
-openclaw plugins enable minimax-portal-auth
+orchid plugins enable minimax-portal-auth
 ```
 
 Restart the Gateway after enabling.
 
 ```bash
-openclaw gateway restart
+orchid gateway restart
 ```
 
 ## Authenticate
 
 ```bash
-openclaw models auth login --provider minimax-portal --set-default
+orchid models auth login --provider minimax-portal --set-default
 ```
 
 You will be prompted to select an endpoint:

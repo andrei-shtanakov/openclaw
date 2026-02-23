@@ -3,7 +3,7 @@ import type {
   DmConfig,
   DmPolicy,
   GroupPolicy,
-} from "openclaw/plugin-sdk";
+} from "orchid/plugin-sdk";
 
 export type { DmPolicy, GroupPolicy };
 

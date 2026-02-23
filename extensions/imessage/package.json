@@ -1,13 +1,13 @@
 {
-  "name": "@openclaw/imessage",
+  "name": "@orchid/imessage",
   "version": "2026.2.22",
   "private": true,
-  "description": "OpenClaw iMessage channel plugin",
+  "description": "Orchid iMessage channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "orchid": "workspace:*"
   },
-  "openclaw": {
+  "orchid": {
     "extensions": [
       "./index.ts"
     ]

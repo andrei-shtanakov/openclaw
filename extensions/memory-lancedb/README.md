@@ -1,14 +1,14 @@
-# Memory LanceDB (OpenClaw plugin)
+# Memory LanceDB (Orchid plugin)
 
 LanceDB-backed long-term memory with auto-recall and auto-capture.
 
 ## Enable
 
 ```bash
-openclaw plugins enable memory-lancedb
+orchid plugins enable memory-lancedb
 ```
 
-Or set as the memory slot provider in `openclaw.json`:
+Or set as the memory slot provider in `orchid.json`:
 
 ```json5
 {
@@ -33,7 +33,7 @@ Or set as the memory slot provider in `openclaw.json`:
             apiKey: "${OPENAI_API_KEY}",
             model: "text-embedding-3-small", // or "text-embedding-3-large"
           },
-          dbPath: "~/.openclaw/memory/lancedb", // default
+          dbPath: "~/.orchid/memory/lancedb", // default
           autoCapture: true, // auto-capture important info
           autoRecall: true, // auto-inject relevant memories
         },

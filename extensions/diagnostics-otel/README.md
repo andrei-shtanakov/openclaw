@@ -1,11 +1,11 @@
-# Diagnostics OpenTelemetry (OpenClaw plugin)
+# Diagnostics OpenTelemetry (Orchid plugin)
 
 Export diagnostics events to an OpenTelemetry collector.
 
 ## Enable
 
 ```bash
-openclaw plugins enable diagnostics-otel
+orchid plugins enable diagnostics-otel
 ```
 
 ## Config

@@ -7,11 +7,7 @@ import {
   resolveModelRefFromString,
 } from "../../agents/model-selection.js";
 import { formatCliCommand } from "../../cli/command-format.js";
-import {
-  type OpenClawConfig,
-  readConfigFileSnapshot,
-  writeConfigFile,
-} from "../../config/config.js";
+import { type OrchidConfig, readConfigFileSnapshot, writeConfigFile } from "../../config/config.js";
 import { normalizeAgentId } from "../../routing/session-key.js";
 
 export const ensureFlagCompatibility = (opts: { json?: boolean; plain?: boolean }) => {
@@ -59,7 +55,7 @@ export const isLocalBaseUrl = (baseUrl: string) => {
   }
 };
 
-export async function loadValidConfigOrThrow(): Promise<OpenClawConfig> {
+export async function loadValidConfigOrThrow(): Promise<OrchidConfig> {
   const snapshot = await readConfigFileSnapshot();
   if (!snapshot.valid) {
     const issues = snapshot.issues.map((issue) => `- ${issue.path}: ${issue.message}`).join("\n");
@@ -69,15 +65,15 @@ export async function loadValidConfigOrThrow(): Promise<OpenClawConfig> {
 }
 
 export async function updateConfig(
-  mutator: (cfg: OpenClawConfig) => OpenClawConfig,
-): Promise<OpenClawConfig> {
+  mutator: (cfg: OrchidConfig) => OrchidConfig,
+): Promise<OrchidConfig> {
   const config = await loadValidConfigOrThrow();
   const next = mutator(config);
   await writeConfigFile(next);
   return next;
 }
 
-export function resolveModelTarget(params: { raw: string; cfg: OpenClawConfig }): {
+export function resolveModelTarget(params: { raw: string; cfg: OrchidConfig }): {
   provider: string;
   model: string;
 } {
@@ -97,7 +93,7 @@ export function resolveModelTarget(params: { raw: string; cfg: OpenClawConfig })
 }
 
 export function resolveModelKeysFromEntries(params: {
-  cfg: OpenClawConfig;
+  cfg: OrchidConfig;
   entries: readonly string[];
 }): string[] {
   const aliasIndex = buildModelAliasIndex({
@@ -116,7 +112,7 @@ export function resolveModelKeysFromEntries(params: {
     .map((entry) => modelKey(entry.ref.provider, entry.ref.model));
 }
 
-export function buildAllowlistSet(cfg: OpenClawConfig): Set<string> {
+export function buildAllowlistSet(cfg: OrchidConfig): Set<string> {
   const allowed = new Set<string>();
   const models = cfg.agents?.defaults?.models ?? {};
   for (const raw of Object.keys(models)) {
@@ -141,7 +137,7 @@ export function normalizeAlias(alias: string): string {
 }
 
 export function resolveKnownAgentId(params: {
-  cfg: OpenClawConfig;
+  cfg: OrchidConfig;
   rawAgentId?: string | null;
 }): string | undefined {
   const raw = params.rawAgentId?.trim();
@@ -152,7 +148,7 @@ export function resolveKnownAgentId(params: {
   const knownAgents = listAgentIds(params.cfg);
   if (!knownAgents.includes(agentId)) {
     throw new Error(
-      `Unknown agent id "${raw}". Use "${formatCliCommand("openclaw agents list")}" to see configured agents.`,
+      `Unknown agent id "${raw}". Use "${formatCliCommand("orchid agents list")}" to see configured agents.`,
     );
   }
   return agentId;
@@ -175,10 +171,10 @@ export function mergePrimaryFallbackConfig(
 }
 
 export function applyDefaultModelPrimaryUpdate(params: {
-  cfg: OpenClawConfig;
+  cfg: OrchidConfig;
   modelRaw: string;
   field: "model" | "imageModel";
-}): OpenClawConfig {
+}): OrchidConfig {
   const resolved = resolveModelTarget({ raw: params.modelRaw, cfg: params.cfg });
   const key = `${resolved.provider}/${resolved.model}`;
 

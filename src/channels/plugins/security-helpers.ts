@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../../config/config.js";
+import type { OrchidConfig } from "../../config/config.js";
 import {
   resolveAllowlistProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
@@ -24,7 +24,7 @@ export type BuildResolveDmPolicyOpts = {
 
 export function buildResolveDmPolicy(opts: BuildResolveDmPolicyOpts) {
   return (ctx: {
-    cfg: OpenClawConfig;
+    cfg: OrchidConfig;
     accountId?: string | null;
     account: unknown;
   }): ChannelSecurityDmPolicy => {
@@ -79,7 +79,7 @@ export type BuildCollectWarningsOpts = {
 };
 
 export function buildCollectWarnings(opts: BuildCollectWarningsOpts) {
-  return (ctx: { cfg: OpenClawConfig; accountId?: string | null; account: unknown }): string[] => {
+  return (ctx: { cfg: OrchidConfig; accountId?: string | null; account: unknown }): string[] => {
     const defaultGroupPolicy = resolveDefaultGroupPolicy(ctx.cfg);
     const acc = ctx.account as
       | {
@@ -120,7 +120,7 @@ export function buildCollectWarnings(opts: BuildCollectWarningsOpts) {
 export function buildSetupDefaults(channelKey: string) {
   return {
     resolveAccountId: (params: { accountId?: string }) => normalizeAccountId(params.accountId),
-    applyAccountName: (params: { cfg: OpenClawConfig; accountId: string; name?: string }) =>
+    applyAccountName: (params: { cfg: OrchidConfig; accountId: string; name?: string }) =>
       applyAccountNameToChannelSection({
         cfg: params.cfg,
         channelKey,

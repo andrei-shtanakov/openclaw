@@ -1,12 +1,12 @@
-# LINE (OpenClaw channel)
+# LINE (Orchid channel)
 
 LINE Messaging API support for direct messages and groups.
 
-Docs: https://docs.openclaw.ai/channels/line
+Docs: https://docs.orchid.ai/channels/line
 
 ## Enable
 
-LINE is a built-in channel. Enable it in `openclaw.json`:
+LINE is a built-in channel. Enable it in `orchid.json`:
 
 ```json5
 {
@@ -28,4 +28,4 @@ Key fields:
 - `channelSecret` — LINE channel secret for webhook verification
 - `dmPolicy` — `"pairing"` (default), `"allowlist"`, `"open"`, or `"disabled"`
 
-See [full documentation](https://docs.openclaw.ai/channels/line) for all options.
+See [full documentation](https://docs.orchid.ai/channels/line) for all options.

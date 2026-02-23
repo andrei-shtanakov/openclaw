@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { OrchidConfig } from "../../config/config.js";
 import {
   buildCollectWarnings,
   buildResolveDmPolicy,
@@ -10,13 +10,13 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function cfg(channelKey: string, section?: Record<string, unknown> | null): OpenClawConfig {
+function cfg(channelKey: string, section?: Record<string, unknown> | null): OrchidConfig {
   if (section === null) {
-    return {} as unknown as OpenClawConfig;
+    return {} as unknown as OrchidConfig;
   }
   return {
     channels: { [channelKey]: section ?? {} },
-  } as unknown as OpenClawConfig;
+  } as unknown as OrchidConfig;
 }
 
 // ---------------------------------------------------------------------------
@@ -283,7 +283,7 @@ describe("buildCollectWarnings", () => {
         defaults: { groupPolicy: "open" },
         telegram: {},
       },
-    } as unknown as OpenClawConfig;
+    } as unknown as OrchidConfig;
     const result = collectOpen({
       cfg: cfgWithDefaults,
       account: { config: {} },

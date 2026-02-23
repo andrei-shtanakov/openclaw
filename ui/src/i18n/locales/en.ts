@@ -49,7 +49,7 @@ export const en: TranslationMap = {
     skills: "Skills and API keys.",
     nodes: "Paired devices and commands.",
     chat: "Gateway chat for quick interventions.",
-    config: "Edit openclaw.json.",
+    config: "Edit orchid.json.",
     debug: "Snapshots, events, RPC.",
     logs: "Live gateway logs.",
   },

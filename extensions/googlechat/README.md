@@ -1,18 +1,18 @@
-# Google Chat (OpenClaw plugin)
+# Google Chat (Orchid plugin)
 
 Google Chat bot support via Service Account and HTTP webhooks.
 
-Docs: https://docs.openclaw.ai/channels/googlechat
+Docs: https://docs.orchid.ai/channels/googlechat
 
 ## Enable
 
 ```bash
-openclaw plugins enable googlechat
+orchid plugins enable googlechat
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -26,4 +26,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/googlechat) for all options.
+See [full documentation](https://docs.orchid.ai/channels/googlechat) for all options.

@@ -1,17 +1,17 @@
-# @openclaw/zalo
+# @orchid/zalo
 
-Zalo channel plugin for OpenClaw (Bot API).
+Zalo channel plugin for Orchid (Bot API).
 
 ## Install (local checkout)
 
 ```bash
-openclaw plugins install ./extensions/zalo
+orchid plugins install ./extensions/zalo
 ```
 
 ## Install (npm)
 
 ```bash
-openclaw plugins install @openclaw/zalo
+orchid plugins install @orchid/zalo
 ```
 
 Onboarding: select Zalo and confirm the install prompt to fetch the plugin automatically.

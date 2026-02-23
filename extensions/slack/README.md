@@ -1,12 +1,12 @@
-# Slack (OpenClaw channel)
+# Slack (Orchid channel)
 
 Slack bot support via Socket Mode (default) or HTTP Events API.
 
-Docs: https://docs.openclaw.ai/channels/slack
+Docs: https://docs.orchid.ai/channels/slack
 
 ## Enable
 
-Slack is a built-in channel. Enable it in `openclaw.json`:
+Slack is a built-in channel. Enable it in `orchid.json`:
 
 ```json5
 {
@@ -30,4 +30,4 @@ Key fields:
 - `signingSecret` — Required for HTTP mode
 - `dmPolicy` — `"pairing"` (default), `"allowlist"`, `"open"`, or `"disabled"`
 
-See [full documentation](https://docs.openclaw.ai/channels/slack) for all options.
+See [full documentation](https://docs.orchid.ai/channels/slack) for all options.

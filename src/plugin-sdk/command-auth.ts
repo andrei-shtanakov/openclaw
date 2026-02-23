@@ -1,7 +1,7 @@
-import type { OpenClawConfig } from "../config/config.js";
+import type { OrchidConfig } from "../config/config.js";
 
 export type ResolveSenderCommandAuthorizationParams = {
-  cfg: OpenClawConfig;
+  cfg: OrchidConfig;
   rawBody: string;
   isGroup: boolean;
   dmPolicy: string;
@@ -9,7 +9,7 @@ export type ResolveSenderCommandAuthorizationParams = {
   senderId: string;
   isSenderAllowed: (senderId: string, allowFrom: string[]) => boolean;
   readAllowFromStore: () => Promise<string[]>;
-  shouldComputeCommandAuthorized: (rawBody: string, cfg: OpenClawConfig) => boolean;
+  shouldComputeCommandAuthorized: (rawBody: string, cfg: OrchidConfig) => boolean;
   resolveCommandAuthorizedFromAuthorizers: (params: {
     useAccessGroups: boolean;
     authorizers: Array<{ configured: boolean; allowed: boolean }>;

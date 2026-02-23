@@ -1,4 +1,4 @@
-# Google Antigravity Auth (OpenClaw plugin)
+# Google Antigravity Auth (Orchid plugin)
 
 > **Status: experimental** — requires testing and coverage before production use.
 
@@ -9,7 +9,7 @@ OAuth provider plugin for **Google Antigravity** (Cloud Code Assist).
 Bundled plugins are disabled by default. Enable this one:
 
 ```bash
-openclaw plugins enable google-antigravity-auth
+orchid plugins enable google-antigravity-auth
 ```
 
 Restart the Gateway after enabling.
@@ -17,7 +17,7 @@ Restart the Gateway after enabling.
 ## Authenticate
 
 ```bash
-openclaw models auth login --provider google-antigravity --set-default
+orchid models auth login --provider google-antigravity --set-default
 ```
 
 ## Notes

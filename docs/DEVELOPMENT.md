@@ -8,15 +8,15 @@
 ## Setup
 
 ```bash
-git clone https://github.com/openclaw/openclaw.git
-cd openclaw
+git clone https://github.com/orchid/orchid.git
+cd orchid
 
 pnpm install
 pnpm ui:build   # auto-installs UI deps on first run
 pnpm build
 ```
 
-Copy `.env.example` to `.env` (or `~/.openclaw/.env` for daemon mode) and set at least one LLM provider key:
+Copy `.env.example` to `.env` (or `~/.orchid/.env` for daemon mode) and set at least one LLM provider key:
 
 ```bash
 cp .env.example .env
@@ -27,7 +27,7 @@ cp .env.example .env
 
 ```bash
 # Production-like (from build output)
-pnpm openclaw gateway --port 18789 --verbose
+pnpm orchid gateway --port 18789 --verbose
 
 # Development (skip channels, fast startup)
 pnpm gateway:dev
@@ -36,7 +36,7 @@ pnpm gateway:dev
 pnpm gateway:watch
 ```
 
-`pnpm gateway:dev` sets `OPENCLAW_SKIP_CHANNELS=1` so you can iterate on core logic without configuring bot tokens.
+`pnpm gateway:dev` sets `ORCHID_SKIP_CHANNELS=1` so you can iterate on core logic without configuring bot tokens.
 
 ## Code Quality
 
@@ -94,11 +94,11 @@ Coverage thresholds: 70% lines/functions/statements, 55% branches.
 
 **Core:**
 
-| Variable                 | Purpose                                                  |
-| ------------------------ | -------------------------------------------------------- |
-| `OPENCLAW_GATEWAY_TOKEN` | Gateway auth token (required if binding beyond loopback) |
-| `OPENCLAW_STATE_DIR`     | State directory (default: `~/.openclaw`)                 |
-| `OPENCLAW_CONFIG_PATH`   | Config file path (default: `~/.openclaw/openclaw.json`)  |
+| Variable               | Purpose                                                  |
+| ---------------------- | -------------------------------------------------------- |
+| `ORCHID_GATEWAY_TOKEN` | Gateway auth token (required if binding beyond loopback) |
+| `ORCHID_STATE_DIR`     | State directory (default: `~/.orchid`)                   |
+| `ORCHID_CONFIG_PATH`   | Config file path (default: `~/.orchid/orchid.json`)      |
 
 **LLM providers** (set at least one):
 
@@ -119,13 +119,13 @@ Coverage thresholds: 70% lines/functions/statements, 55% branches.
 
 **Dev/test flags:**
 
-| Variable                       | Effect                                        |
-| ------------------------------ | --------------------------------------------- |
-| `OPENCLAW_SKIP_CHANNELS=1`     | Skip channel initialization                   |
-| `OPENCLAW_LIVE_TEST=1`         | Enable live testing                           |
-| `OPENCLAW_TEST_PROFILE=serial` | Serial test execution (low-resource machines) |
+| Variable                     | Effect                                        |
+| ---------------------------- | --------------------------------------------- |
+| `ORCHID_SKIP_CHANNELS=1`     | Skip channel initialization                   |
+| `ORCHID_LIVE_TEST=1`         | Enable live testing                           |
+| `ORCHID_TEST_PROFILE=serial` | Serial test execution (low-resource machines) |
 
-Env precedence (highest to lowest): process env > `./.env` > `~/.openclaw/.env` > `openclaw.json` `env` block.
+Env precedence (highest to lowest): process env > `./.env` > `~/.orchid/.env` > `orchid.json` `env` block.
 
 ## Extension Development
 
@@ -134,8 +134,8 @@ Extensions live in `extensions/<name>/`. Each has:
 ```
 extensions/my-extension/
 ├── index.ts                  # Plugin entry point
-├── package.json              # With "openclaw" metadata
-├── openclaw.plugin.json      # Plugin manifest (optional)
+├── package.json              # With "orchid" metadata
+├── orchid.plugin.json      # Plugin manifest (optional)
 ├── README.md
 └── src/
     ├── channel.ts            # Channel adapter (if channel plugin)
@@ -145,41 +145,41 @@ extensions/my-extension/
 Entry point pattern:
 
 ```typescript
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
-import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
+import type { OrchidPluginApi } from "orchid/plugin-sdk";
+import { emptyPluginConfigSchema } from "orchid/plugin-sdk";
 
 export default {
   id: "my-extension",
   name: "My Extension",
   configSchema: emptyPluginConfigSchema(),
-  register(api: OpenClawPluginApi) {
+  register(api: OrchidPluginApi) {
     // Register channels, hooks, tools, etc.
   },
 };
 ```
 
-Enable with `openclaw plugins enable my-extension` or via config.
+Enable with `orchid plugins enable my-extension` or via config.
 
 ## Docker
 
 ```bash
 # Build
-docker build -t openclaw:local .
+docker build -t orchid:local .
 
 # With browser support (+300MB, speeds up container start)
-docker build --build-arg OPENCLAW_INSTALL_BROWSER=1 -t openclaw:local .
+docker build --build-arg ORCHID_INSTALL_BROWSER=1 -t orchid:local .
 
 # Run via compose
-OPENCLAW_GATEWAY_TOKEN="your-token" docker-compose up
+ORCHID_GATEWAY_TOKEN="your-token" docker-compose up
 ```
 
 ## Storage
 
-OpenClaw is self-contained — no external database required.
+Orchid is self-contained — no external database required.
 
-- **Config:** `~/.openclaw/openclaw.json`
-- **State:** `~/.openclaw/` (SQLite-based, file-backed)
-- **Memory:** `~/.openclaw/memory/` (optional LanceDB or file-based)
+- **Config:** `~/.orchid/orchid.json`
+- **State:** `~/.orchid/` (SQLite-based, file-backed)
+- **Memory:** `~/.orchid/memory/` (optional LanceDB or file-based)
 
 ## Documentation
 

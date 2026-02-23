@@ -1,12 +1,12 @@
-# Telegram (OpenClaw channel)
+# Telegram (Orchid channel)
 
 Telegram bot support via grammY with long polling or webhook mode.
 
-Docs: https://docs.openclaw.ai/channels/telegram
+Docs: https://docs.orchid.ai/channels/telegram
 
 ## Enable
 
-Telegram is a built-in channel. Enable it in `openclaw.json`:
+Telegram is a built-in channel. Enable it in `orchid.json`:
 
 ```json5
 {
@@ -27,4 +27,4 @@ Key fields:
 - `dmPolicy` — `"pairing"` (default), `"allowlist"`, `"open"`, or `"disabled"`
 - `groupPolicy` — `"allowlist"` (default), `"open"`, or `"disabled"`
 
-See [full documentation](https://docs.openclaw.ai/channels/telegram) for all options.
+See [full documentation](https://docs.orchid.ai/channels/telegram) for all options.

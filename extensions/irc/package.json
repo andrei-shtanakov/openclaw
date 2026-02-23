@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/irc",
+  "name": "@orchid/irc",
   "version": "2026.2.22",
-  "description": "OpenClaw IRC channel plugin",
+  "description": "Orchid IRC channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "orchid": "workspace:*"
   },
-  "openclaw": {
+  "orchid": {
     "extensions": [
       "./index.ts"
     ]

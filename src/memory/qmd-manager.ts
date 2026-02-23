@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import readline from "node:readline";
 import { resolveAgentWorkspaceDir } from "../agents/agent-scope.js";
-import type { OpenClawConfig } from "../config/config.js";
+import type { OrchidConfig } from "../config/config.js";
 import { resolveStateDir } from "../config/paths.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { isFileMissingError, statRegularFile } from "./fs-utils.js";
@@ -121,7 +121,7 @@ type QmdManagerMode = "full" | "status";
 
 export class QmdMemoryManager implements MemorySearchManager {
   static async create(params: {
-    cfg: OpenClawConfig;
+    cfg: OrchidConfig;
     agentId: string;
     resolved: ResolvedMemoryBackendConfig;
     mode?: QmdManagerMode;
@@ -135,7 +135,7 @@ export class QmdMemoryManager implements MemorySearchManager {
     return manager;
   }
 
-  private readonly cfg: OpenClawConfig;
+  private readonly cfg: OrchidConfig;
   private readonly agentId: string;
   private readonly qmd: ResolvedQmdConfig;
   private readonly workspaceDir: string;
@@ -174,11 +174,7 @@ export class QmdMemoryManager implements MemorySearchManager {
   private embedFailureCount = 0;
   private attemptedNullByteCollectionRepair = false;
 
-  private constructor(params: {
-    cfg: OpenClawConfig;
-    agentId: string;
-    resolved: ResolvedQmdConfig;
-  }) {
+  private constructor(params: { cfg: OrchidConfig; agentId: string; resolved: ResolvedQmdConfig }) {
     this.cfg = params.cfg;
     this.agentId = params.agentId;
     this.qmd = params.resolved;
@@ -1000,11 +996,11 @@ export class QmdMemoryManager implements MemorySearchManager {
     }
     if (!mcporter.startDaemon) {
       type McporterWarnGlobal = typeof globalThis & {
-        __openclawMcporterColdStartWarned?: boolean;
+        __orchidMcporterColdStartWarned?: boolean;
       };
       const g: McporterWarnGlobal = globalThis;
-      if (!g.__openclawMcporterColdStartWarned) {
-        g.__openclawMcporterColdStartWarned = true;
+      if (!g.__orchidMcporterColdStartWarned) {
+        g.__orchidMcporterColdStartWarned = true;
         log.warn(
           "mcporter qmd bridge enabled but startDaemon=false; each query may cold-start QMD MCP. Consider setting memory.qmd.mcporter.startDaemon=true to keep it warm.",
         );
@@ -1012,21 +1008,21 @@ export class QmdMemoryManager implements MemorySearchManager {
       return;
     }
     type McporterGlobal = typeof globalThis & {
-      __openclawMcporterDaemonStart?: Promise<void>;
+      __orchidMcporterDaemonStart?: Promise<void>;
     };
     const g: McporterGlobal = globalThis;
-    if (!g.__openclawMcporterDaemonStart) {
-      g.__openclawMcporterDaemonStart = (async () => {
+    if (!g.__orchidMcporterDaemonStart) {
+      g.__orchidMcporterDaemonStart = (async () => {
         try {
           await this.runMcporter(["daemon", "start"], { timeoutMs: 10_000 });
         } catch (err) {
           log.warn(`mcporter daemon start failed: ${String(err)}`);
           // Allow future searches to retry daemon start on transient failures.
-          delete g.__openclawMcporterDaemonStart;
+          delete g.__orchidMcporterDaemonStart;
         }
       })();
     }
-    await g.__openclawMcporterDaemonStart;
+    await g.__orchidMcporterDaemonStart;
   }
 
   private async runMcporter(

@@ -1,18 +1,18 @@
-# Nextcloud Talk (OpenClaw plugin)
+# Nextcloud Talk (Orchid plugin)
 
 Nextcloud Talk bot support via webhook and shared secret.
 
-Docs: https://docs.openclaw.ai/channels/nextcloud-talk
+Docs: https://docs.orchid.ai/channels/nextcloud-talk
 
 ## Enable
 
 ```bash
-openclaw plugins enable nextcloud-talk
+orchid plugins enable nextcloud-talk
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -26,4 +26,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/nextcloud-talk) for all options.
+See [full documentation](https://docs.orchid.ai/channels/nextcloud-talk) for all options.

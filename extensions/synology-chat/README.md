@@ -1,18 +1,18 @@
-# Synology Chat (OpenClaw plugin)
+# Synology Chat (Orchid plugin)
 
 Synology Chat bot support for NAS-hosted team messaging.
 
-Docs: https://docs.openclaw.ai/channels/synology-chat
+Docs: https://docs.orchid.ai/channels/synology-chat
 
 ## Enable
 
 ```bash
-openclaw plugins enable synology-chat
+orchid plugins enable synology-chat
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -24,4 +24,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/synology-chat) for all options.
+See [full documentation](https://docs.orchid.ai/channels/synology-chat) for all options.

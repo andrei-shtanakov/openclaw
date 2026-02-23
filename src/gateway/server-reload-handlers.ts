@@ -1,5 +1,5 @@
 import { invalidateModelCatalog } from "../agents/model-catalog.js";
-import { ensureOpenClawModelsJson } from "../agents/models-config.js";
+import { ensureOrchidModelsJson } from "../agents/models-config.js";
 import { getActiveEmbeddedRunCount } from "../agents/pi-embedded-runner/runs.js";
 import { getTotalPendingReplies } from "../auto-reply/reply/dispatcher-registry.js";
 import type { CliDeps } from "../cli/deps.js";
@@ -98,14 +98,14 @@ export function createGatewayReloadHandlers(params: {
         cfg: nextConfig,
         log: params.logHooks,
         onSkipped: () =>
-          params.logHooks.info("skipping gmail watcher restart (OPENCLAW_SKIP_GMAIL_WATCHER=1)"),
+          params.logHooks.info("skipping gmail watcher restart (ORCHID_SKIP_GMAIL_WATCHER=1)"),
       });
     }
 
     if (plan.reloadModels) {
       try {
         invalidateModelCatalog();
-        await ensureOpenClawModelsJson(nextConfig);
+        await ensureOrchidModelsJson(nextConfig);
         params.logReload.info("model registry reloaded");
       } catch (err) {
         params.logReload.warn(`model registry reload failed: ${String(err)}`);
@@ -114,11 +114,11 @@ export function createGatewayReloadHandlers(params: {
 
     if (plan.restartChannels.size > 0) {
       if (
-        isTruthyEnvValue(process.env.OPENCLAW_SKIP_CHANNELS) ||
-        isTruthyEnvValue(process.env.OPENCLAW_SKIP_PROVIDERS)
+        isTruthyEnvValue(process.env.ORCHID_SKIP_CHANNELS) ||
+        isTruthyEnvValue(process.env.ORCHID_SKIP_PROVIDERS)
       ) {
         params.logChannels.info(
-          "skipping channel reload (OPENCLAW_SKIP_CHANNELS=1 or OPENCLAW_SKIP_PROVIDERS=1)",
+          "skipping channel reload (ORCHID_SKIP_CHANNELS=1 or ORCHID_SKIP_PROVIDERS=1)",
         );
       } else {
         const restartChannel = async (name: ChannelKind) => {

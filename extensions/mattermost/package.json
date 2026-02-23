@@ -1,12 +1,12 @@
 {
-  "name": "@openclaw/mattermost",
+  "name": "@orchid/mattermost",
   "version": "2026.2.22",
-  "description": "OpenClaw Mattermost channel plugin",
+  "description": "Orchid Mattermost channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "orchid": "workspace:*"
   },
-  "openclaw": {
+  "orchid": {
     "extensions": [
       "./index.ts"
     ],
@@ -20,7 +20,7 @@
       "order": 65
     },
     "install": {
-      "npmSpec": "@openclaw/mattermost",
+      "npmSpec": "@orchid/mattermost",
       "localPath": "extensions/mattermost",
       "defaultChoice": "npm"
     }

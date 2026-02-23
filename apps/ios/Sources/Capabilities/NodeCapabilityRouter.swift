@@ -1,5 +1,5 @@
 import Foundation
-import OpenClawKit
+import OrchidKit
 
 @MainActor
 final class NodeCapabilityRouter {

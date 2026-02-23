@@ -2,12 +2,12 @@ import type { StreamFn } from "@mariozechner/pi-agent-core";
 import type { SimpleStreamOptions } from "@mariozechner/pi-ai";
 import { streamSimple } from "@mariozechner/pi-ai";
 import type { ThinkLevel } from "../../auto-reply/thinking.js";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { OrchidConfig } from "../../config/config.js";
 import { log } from "./logger.js";
 
 const OPENROUTER_APP_HEADERS: Record<string, string> = {
-  "HTTP-Referer": "https://openclaw.ai",
-  "X-Title": "OpenClaw",
+  "HTTP-Referer": "https://orchid.ai",
+  "X-Title": "Orchid",
 };
 const ANTHROPIC_CONTEXT_1M_BETA = "context-1m-2025-08-07";
 const ANTHROPIC_1M_MODEL_PREFIXES = ["claude-opus-4", "claude-sonnet-4"] as const;
@@ -23,7 +23,7 @@ const OPENAI_RESPONSES_PROVIDERS = new Set(["openai"]);
  * @internal Exported for testing only
  */
 export function resolveExtraParams(params: {
-  cfg: OpenClawConfig | undefined;
+  cfg: OrchidConfig | undefined;
   provider: string;
   modelId: string;
 }): Record<string, unknown> | undefined {
@@ -291,7 +291,7 @@ function createAnthropicBetaHeadersWrapper(
 }
 
 /**
- * Map OpenClaw's ThinkLevel to OpenRouter's reasoning.effort values.
+ * Map Orchid's ThinkLevel to OpenRouter's reasoning.effort values.
  * "off" maps to "none"; all other levels pass through as-is.
  */
 function mapThinkingLevelToOpenRouterReasoningEffort(
@@ -390,7 +390,7 @@ function createZaiToolStreamWrapper(
  */
 export function applyExtraParamsToAgent(
   agent: { streamFn?: StreamFn },
-  cfg: OpenClawConfig | undefined,
+  cfg: OrchidConfig | undefined,
   provider: string,
   modelId: string,
   extraParamsOverride?: Record<string, unknown>,

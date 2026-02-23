@@ -1,18 +1,18 @@
-# IRC (OpenClaw plugin)
+# IRC (Orchid plugin)
 
 IRC channel and direct message support.
 
-Docs: https://docs.openclaw.ai/channels/irc
+Docs: https://docs.orchid.ai/channels/irc
 
 ## Enable
 
 ```bash
-openclaw plugins enable irc
+orchid plugins enable irc
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -22,11 +22,11 @@ Minimal config in `openclaw.json`:
       host: "irc.example.com",
       port: 6697,
       tls: true,
-      nick: "openclaw",
+      nick: "orchid",
       channels: ["#general"],
     },
   },
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/irc) for all options.
+See [full documentation](https://docs.orchid.ai/channels/irc) for all options.

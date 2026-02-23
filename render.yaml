@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: openclaw
+    name: orchid
     runtime: docker
     plan: starter
     healthCheckPath: /health
@@ -9,13 +9,13 @@ services:
         value: "8080"
       - key: SETUP_PASSWORD
         sync: false
-      - key: OPENCLAW_STATE_DIR
-        value: /data/.openclaw
-      - key: OPENCLAW_WORKSPACE_DIR
+      - key: ORCHID_STATE_DIR
+        value: /data/.orchid
+      - key: ORCHID_WORKSPACE_DIR
         value: /data/workspace
-      - key: OPENCLAW_GATEWAY_TOKEN
+      - key: ORCHID_GATEWAY_TOKEN
         generateValue: true
     disk:
-      name: openclaw-data
+      name: orchid-data
       mountPath: /data
       sizeGB: 1

@@ -1,18 +1,18 @@
-# Feishu / Lark (OpenClaw plugin)
+# Feishu / Lark (Orchid plugin)
 
 Feishu/Lark team messaging bot via WebSocket long connection.
 
-Docs: https://docs.openclaw.ai/channels/feishu
+Docs: https://docs.orchid.ai/channels/feishu
 
 ## Enable
 
 ```bash
-openclaw plugins enable feishu
+orchid plugins enable feishu
 ```
 
 ## Config
 
-Minimal config in `openclaw.json`:
+Minimal config in `orchid.json`:
 
 ```json5
 {
@@ -26,4 +26,4 @@ Minimal config in `openclaw.json`:
 }
 ```
 
-See [full documentation](https://docs.openclaw.ai/channels/feishu) for all options.
+See [full documentation](https://docs.orchid.ai/channels/feishu) for all options.
