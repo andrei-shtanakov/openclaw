@@ -157,6 +157,12 @@ describe("buildGatewayReloadPlan", () => {
     const plan = buildGatewayReloadPlan(["unknownField"]);
     expect(plan.restartGateway).toBe(true);
   });
+
+  it("hot-reloads model config without gateway restart", () => {
+    const plan = buildGatewayReloadPlan(["models.providers"]);
+    expect(plan.restartGateway).toBe(false);
+    expect(plan.reloadModels).toBe(true);
+  });
 });
 
 describe("resolveGatewayReloadSettings", () => {

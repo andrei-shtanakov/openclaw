@@ -59,6 +59,11 @@ function applyOpenAICodexSparkFallback(models: ModelCatalogEntry[]): void {
   });
 }
 
+/** Clear the model catalog cache so the next call to loadModelCatalog() re-discovers models. */
+export function invalidateModelCatalog(): void {
+  modelCatalogPromise = null;
+}
+
 export function resetModelCatalogCacheForTest() {
   modelCatalogPromise = null;
   hasLoggedModelCatalogError = false;

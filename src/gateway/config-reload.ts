@@ -18,6 +18,7 @@ export type GatewayReloadPlan = {
   restartReasons: string[];
   hotReasons: string[];
   reloadHooks: boolean;
+  reloadModels: boolean;
   restartGmailWatcher: boolean;
   restartBrowserControl: boolean;
   restartCron: boolean;
@@ -34,6 +35,7 @@ type ReloadRule = {
 
 type ReloadAction =
   | "reload-hooks"
+  | "reload-models"
   | "restart-gmail-watcher"
   | "restart-browser-control"
   | "restart-cron"
@@ -71,7 +73,7 @@ const BASE_RELOAD_RULES_TAIL: ReloadRule[] = [
   { prefix: "identity", kind: "none" },
   { prefix: "wizard", kind: "none" },
   { prefix: "logging", kind: "none" },
-  { prefix: "models", kind: "none" },
+  { prefix: "models", kind: "hot", actions: ["reload-models"] },
   { prefix: "agents", kind: "none" },
   { prefix: "tools", kind: "none" },
   { prefix: "bindings", kind: "none" },
@@ -183,6 +185,7 @@ export function buildGatewayReloadPlan(changedPaths: string[]): GatewayReloadPla
     restartReasons: [],
     hotReasons: [],
     reloadHooks: false,
+    reloadModels: false,
     restartGmailWatcher: false,
     restartBrowserControl: false,
     restartCron: false,
@@ -200,6 +203,9 @@ export function buildGatewayReloadPlan(changedPaths: string[]): GatewayReloadPla
     switch (action) {
       case "reload-hooks":
         plan.reloadHooks = true;
+        break;
+      case "reload-models":
+        plan.reloadModels = true;
         break;
       case "restart-gmail-watcher":
         plan.restartGmailWatcher = true;

@@ -1,3 +1,5 @@
+import { invalidateModelCatalog } from "../agents/model-catalog.js";
+import { ensureOpenClawModelsJson } from "../agents/models-config.js";
 import { getActiveEmbeddedRunCount } from "../agents/pi-embedded-runner/runs.js";
 import { getTotalPendingReplies } from "../auto-reply/reply/dispatcher-registry.js";
 import type { CliDeps } from "../cli/deps.js";
@@ -98,6 +100,12 @@ export function createGatewayReloadHandlers(params: {
         onSkipped: () =>
           params.logHooks.info("skipping gmail watcher restart (OPENCLAW_SKIP_GMAIL_WATCHER=1)"),
       });
+    }
+
+    if (plan.reloadModels) {
+      invalidateModelCatalog();
+      await ensureOpenClawModelsJson(nextConfig);
+      params.logReload.info("model registry reloaded");
     }
 
     if (plan.restartChannels.size > 0) {
