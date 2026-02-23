@@ -1,10 +1,12 @@
 import {
   applyAccountNameToChannelSection,
   buildChannelConfigSchema,
+  buildCollectWarnings,
+  buildResolveDmPolicy,
+  buildSetupDefaults,
   DEFAULT_ACCOUNT_ID,
   deleteAccountFromConfigSection,
   extractSlackToolSend,
-  formatPairingApproveHint,
   getChatChannelMeta,
   handleSlackMessageAction,
   listSlackMessageActions,
@@ -13,14 +15,11 @@ import {
   listSlackDirectoryPeersFromConfig,
   looksLikeSlackTargetId,
   migrateBaseNameToDefaultAccount,
-  normalizeAccountId,
   normalizeSlackMessagingTarget,
   PAIRING_APPROVED_MESSAGE,
   resolveDefaultSlackAccountId,
   resolveSlackAccount,
   resolveSlackReplyToMode,
-  resolveOpenProviderRuntimeGroupPolicy,
-  resolveDefaultGroupPolicy,
   resolveSlackGroupRequireMention,
   resolveSlackGroupToolPolicy,
   buildSlackThreadingToolContext,
@@ -136,45 +135,22 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
       resolveSlackAccount({ cfg, accountId }).config.defaultTo?.trim() || undefined,
   },
   security: {
-    resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(cfg.channels?.slack?.accounts?.[resolvedAccountId]);
-      const allowFromPath = useAccountPath
-        ? `channels.slack.accounts.${resolvedAccountId}.dm.`
-        : "channels.slack.dm.";
-      return {
-        policy: account.dm?.policy ?? "pairing",
-        allowFrom: account.dm?.allowFrom ?? [],
-        allowFromPath,
-        approveHint: formatPairingApproveHint("slack"),
-        normalizeEntry: (raw) => raw.replace(/^(slack|user):/i, ""),
-      };
-    },
-    collectWarnings: ({ account, cfg }) => {
-      const warnings: string[] = [];
-      const defaultGroupPolicy = resolveDefaultGroupPolicy(cfg);
-      const { groupPolicy } = resolveOpenProviderRuntimeGroupPolicy({
-        providerConfigPresent: cfg.channels?.slack !== undefined,
-        groupPolicy: account.config.groupPolicy,
-        defaultGroupPolicy,
-      });
-      const channelAllowlistConfigured =
-        Boolean(account.config.channels) && Object.keys(account.config.channels ?? {}).length > 0;
-
-      if (groupPolicy === "open") {
-        if (channelAllowlistConfigured) {
-          warnings.push(
-            `- Slack channels: groupPolicy="open" allows any channel not explicitly denied to trigger (mention-gated). Set channels.slack.groupPolicy="allowlist" and configure channels.slack.channels.`,
-          );
-        } else {
-          warnings.push(
-            `- Slack channels: groupPolicy="open" with no channel allowlist; any channel can trigger (mention-gated). Set channels.slack.groupPolicy="allowlist" and configure channels.slack.channels.`,
-          );
-        }
-      }
-
-      return warnings;
-    },
+    resolveDmPolicy: buildResolveDmPolicy({
+      channelKey: "slack",
+      getPolicy: (account) => (account as ResolvedSlackAccount).dm?.policy,
+      getAllowFrom: (account) => (account as ResolvedSlackAccount).dm?.allowFrom ?? [],
+      allowFromSubpath: "dm.",
+      normalizeEntry: (raw) => raw.replace(/^(slack|user):/i, ""),
+    }),
+    collectWarnings: buildCollectWarnings({
+      channelKey: "slack",
+      policyResolver: "open",
+      getGroupAllowlist: (account) => (account as ResolvedSlackAccount).config.channels,
+      warningWithAllowlist:
+        '- Slack channels: groupPolicy="open" allows any channel not explicitly denied to trigger (mention-gated). Set channels.slack.groupPolicy="allowlist" and configure channels.slack.channels.',
+      warningWithoutAllowlist:
+        '- Slack channels: groupPolicy="open" with no channel allowlist; any channel can trigger (mention-gated). Set channels.slack.groupPolicy="allowlist" and configure channels.slack.channels.',
+    }),
   },
   groups: {
     resolveRequireMention: resolveSlackGroupRequireMention,
@@ -250,14 +226,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
       }),
   },
   setup: {
-    resolveAccountId: ({ accountId }) => normalizeAccountId(accountId),
-    applyAccountName: ({ cfg, accountId, name }) =>
-      applyAccountNameToChannelSection({
-        cfg,
-        channelKey: "slack",
-        accountId,
-        name,
-      }),
+    ...buildSetupDefaults("slack"),
     validateInput: ({ accountId, input }) => {
       if (input.useEnv && accountId !== DEFAULT_ACCOUNT_ID) {
         return "Slack env tokens can only be used for the default account.";
