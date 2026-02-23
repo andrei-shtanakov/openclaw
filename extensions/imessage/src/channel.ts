@@ -1,16 +1,17 @@
 import {
   applyAccountNameToChannelSection,
   buildChannelConfigSchema,
+  buildCollectWarnings,
+  buildResolveDmPolicy,
+  buildSetupDefaults,
   DEFAULT_ACCOUNT_ID,
   deleteAccountFromConfigSection,
-  formatPairingApproveHint,
   getChatChannelMeta,
   imessageOnboardingAdapter,
   IMessageConfigSchema,
   listIMessageAccountIds,
   looksLikeIMessageTargetId,
   migrateBaseNameToDefaultAccount,
-  normalizeAccountId,
   normalizeIMessageMessagingTarget,
   PAIRING_APPROVED_MESSAGE,
   resolveChannelMediaMaxBytes,
@@ -18,8 +19,6 @@ import {
   resolveIMessageAccount,
   resolveIMessageGroupRequireMention,
   resolveIMessageGroupToolPolicy,
-  resolveAllowlistProviderRuntimeGroupPolicy,
-  resolveDefaultGroupPolicy,
   setAccountEnabledInConfigSection,
   type ChannelPlugin,
   type ResolvedIMessageAccount,
@@ -84,34 +83,19 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
       resolveIMessageAccount({ cfg, accountId }).config.defaultTo?.trim() || undefined,
   },
   security: {
-    resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(cfg.channels?.imessage?.accounts?.[resolvedAccountId]);
-      const basePath = useAccountPath
-        ? `channels.imessage.accounts.${resolvedAccountId}.`
-        : "channels.imessage.";
-      return {
-        policy: account.config.dmPolicy ?? "pairing",
-        allowFrom: account.config.allowFrom ?? [],
-        policyPath: `${basePath}dmPolicy`,
-        allowFromPath: basePath,
-        approveHint: formatPairingApproveHint("imessage"),
-      };
-    },
-    collectWarnings: ({ account, cfg }) => {
-      const defaultGroupPolicy = resolveDefaultGroupPolicy(cfg);
-      const { groupPolicy } = resolveAllowlistProviderRuntimeGroupPolicy({
-        providerConfigPresent: cfg.channels?.imessage !== undefined,
-        groupPolicy: account.config.groupPolicy,
-        defaultGroupPolicy,
-      });
-      if (groupPolicy !== "open") {
-        return [];
-      }
-      return [
-        `- iMessage groups: groupPolicy="open" allows any member to trigger the bot. Set channels.imessage.groupPolicy="allowlist" + channels.imessage.groupAllowFrom to restrict senders.`,
-      ];
-    },
+    resolveDmPolicy: buildResolveDmPolicy({
+      channelKey: "imessage",
+      getPolicy: (account) => (account as ResolvedIMessageAccount).config.dmPolicy,
+      getAllowFrom: (account) => (account as ResolvedIMessageAccount).config.allowFrom ?? [],
+    }),
+    collectWarnings: buildCollectWarnings({
+      channelKey: "imessage",
+      policyResolver: "allowlist",
+      getGroupAllowlist: () => undefined,
+      warningWithAllowlist: "",
+      warningWithoutAllowlist:
+        '- iMessage groups: groupPolicy="open" allows any member to trigger the bot. Set channels.imessage.groupPolicy="allowlist" + channels.imessage.groupAllowFrom to restrict senders.',
+    }),
   },
   groups: {
     resolveRequireMention: resolveIMessageGroupRequireMention,
@@ -125,14 +109,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
     },
   },
   setup: {
-    resolveAccountId: ({ accountId }) => normalizeAccountId(accountId),
-    applyAccountName: ({ cfg, accountId, name }) =>
-      applyAccountNameToChannelSection({
-        cfg,
-        channelKey: "imessage",
-        accountId,
-        name,
-      }),
+    ...buildSetupDefaults("imessage"),
     applyAccountConfig: ({ cfg, accountId, input }) => {
       const namedConfig = applyAccountNameToChannelSection({
         cfg,
